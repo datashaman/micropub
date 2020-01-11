@@ -77,6 +77,7 @@ class MicropubController extends Controller
         $content = view(
             $view,
             [
+                'contentType' => $contentType,
                 'frontMatter' => trim(Yaml::dump($frontMatter)),
                 'post' => $mf2,
                 'published' => $published->toIso8601String(),
