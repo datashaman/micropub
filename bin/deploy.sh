@@ -13,13 +13,13 @@ ssh $DEPLOY_HOST "
   git pull
 
   echo 'Install npm dependencies'
-  npm install --production
-
-  echo 'Prune npm dependencies'
-  npm prune --production
+  npm install
 
   echo 'Build assets for production'
   npm run production
+
+  echo 'Prune npm dependencies'
+  npm prune --production
 
   echo 'Restart $DEPLOY_SERVICE service'
   sudo systemctl restart $DEPLOY_SERVICE
