@@ -11,7 +11,9 @@
 |
 */
 
-Route::get('', 'HomeController@index')->name('home')->middleware('auth.indie');
+Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
+
+Route::post('micropub', 'MicropubController@index')->name('micropub')->middleware('auth.micropub');
 
 Route::get('login', 'AuthController@login')->name('auth.login');
 Route::post('login', 'AuthController@doLogin');

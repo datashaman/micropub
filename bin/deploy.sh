@@ -1,15 +1,26 @@
 #!/usr/bin/env bash
 
+export $(grep -v '^#' .env | xargs -d '\n')
+
 ssh $DEPLOY_HOST "
-    cd $DEPLOY_PATH
+  echo 'Change directory to $DEPLOY_PATH'
+  cd $DEPLOY_PATH
 
-    git checkout $DEPLOY_BRANCH
-    git pull
+  echo 'Checkout $DEPLOY_BRANCH branch'
+  git checkout $DEPLOY_BRANCH
 
-    composer install
-    npm install --production
-    npm prune --production
-    npm run production
+  echo 'Pull latest changes'
+  git pull
 
-    sudo systemctl restart php7.2-fpm
+  echo 'Install npm dependencies'
+  npm install --production
+
+  echo 'Prune npm dependencies'
+  npm prune --production
+
+  echo 'Build assets for production'
+  npm run production
+
+  echo 'Restart $DEPLOY_SERVICE service'
+  sudo systemctl restart $DEPLOY_SERVICE
 "
