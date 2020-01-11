@@ -23,6 +23,7 @@ class MicropubController extends Controller
         $mpRequest = MicropubRequest::create($request->all());
 
         $mf2 = collect($mpRequest->toMf2());
+        Log::debug('Mf2', compact('mf2'));
 
         $contentType = is_string($mf2->get('properties.content.0'))
             ? 'text'
