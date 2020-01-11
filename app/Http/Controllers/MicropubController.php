@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use p3k\Micropub\Request as MicropubRequest;
 
 class MicropubController extends Controller
 {
@@ -17,24 +18,12 @@ class MicropubController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $accessToken = $request->get('access_token');
+        $all = $request->all();
 
-        if (!$accessToken) {
-            abort(403);
-        }
+        Log::debug('Request', $all);
 
-        $client = new Client();
+        $mpRequest = MicropubRequest::create($all);
 
-        $user = $client->request('GET', config('indieauth.tokenEndpoint'), [
-            'headers' => [
-                'Authorization' => "Bearer $accessToken",
-            ],
-        ]);
-
-        if (!in_array($user['me'], config('indieauth.me'))) {
-            abort(403);
-        }
-
-        Log::debug('Micropub request', $request->all());
+        Log::debug('Micropub request', $mpRequest);
     }
 }
