@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GuzzleHttp\Client;
 use Html2Text\Html2Text;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Str;
@@ -25,15 +26,15 @@ class MicropubController extends Controller
         $mf2 = $mpRequest->toMf2();
         Log::debug('Mf2', compact('mf2'));
 
-        $contentType = is_string(data_get($mf2, 'properties.content.0'))
+        $contentType = is_string(Arr::get($mf2, 'properties.content.0'))
             ? 'text'
             : 'html';
 
-        $published = $mf2->has('properties.published')
-            ? Carbon::parse(data_get($mf2, 'properties.published'))
+        $published = Arr::has($mf2, 'properties.published')
+            ? Carbon::parse(Arr::get($mf2, 'properties.published'))
             : Carbon::now();
 
-        $contentType = is_string(data_get($mf2, 'properties.content.0'))
+        $contentType = is_string(Arr::get($mf2, 'properties.content.0'))
             ? 'text'
             : 'html';
 
@@ -43,19 +44,19 @@ class MicropubController extends Controller
                 'type' => 'post',
             ])
             ->when(
-                data_get($mf2, 'properties.category'),
+                Arr::get($mf2, 'properties.category'),
                 function ($coll, $tags) {
                     return $coll->put('tags', $tags);
                 }
             )
             ->when(
-                data_get($mf2, 'files'),
+                Arr::get($mf2, 'files'),
                 function ($coll, $files) {
 
                 }
             )
             ->when(
-                data_get($mf2, 'properties.photo'),
+                Arr::get($mf2, 'properties.photo'),
                 function ($coll, $photos) {
                     return $coll->put(
                         'photo',
@@ -72,7 +73,7 @@ class MicropubController extends Controller
                 }
             );
 
-        $view = 'types.' . data_get($mf2, 'type.0');
+        $view = 'types.' . Arr::get($mf2, 'type.0');
         $content = view(
             $view,
             [
@@ -83,8 +84,8 @@ class MicropubController extends Controller
         )->render();
 
         $title = $contentType === 'text'
-            ? substr(data_get($mf2, 'properties.content.0'), 0, 200)
-            : (new Html2Text(data_get($mf2, 'properties.content.0.html')))->getText();
+            ? substr(Arr::get($mf2, 'properties.content.0'), 0, 200)
+            : (new Html2Text(Arr::get($mf2, 'properties.content.0.html')))->getText();
 
         $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
         $slug = $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
