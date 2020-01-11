@@ -63,6 +63,8 @@ class MicropubController extends Controller
                         collect($photos)
                             ->map(
                                 function ($photo) {
+                                    Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
+
                                     return is_string($photo)
                                         ? ['value' => $photo]
                                         : $photo;
