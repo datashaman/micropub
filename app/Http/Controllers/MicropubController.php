@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Str;
+use Illuminate\Support\Str;
 use p3k\Micropub\Request as MicropubRequest;
 use Symfony\Component\Yaml\Yaml;
 
