@@ -22,18 +22,18 @@ class MicropubController extends Controller
     {
         $mpRequest = MicropubRequest::create($request->all());
 
-        $mf2 = collect($mpRequest->toMf2());
+        $mf2 = $mpRequest->toMf2();
         Log::debug('Mf2', compact('mf2'));
 
-        $contentType = is_string($mf2->get('properties.content.0'))
+        $contentType = is_string(data_get($mf2, 'properties.content.0'))
             ? 'text'
             : 'html';
 
         $published = $mf2->has('properties.published')
-            ? Carbon::parse($mf2->get('properties.published'))
+            ? Carbon::parse(data_get($mf2, 'properties.published'))
             : Carbon::now();
 
-        $contentType = is_string($mf2->get('properties.content.0'))
+        $contentType = is_string(data_get($mf2, 'properties.content.0'))
             ? 'text'
             : 'html';
 
@@ -43,19 +43,19 @@ class MicropubController extends Controller
                 'type' => 'post',
             ])
             ->when(
-                $mf2->get('properties.category'),
+                data_get($mf2, 'properties.category'),
                 function ($coll, $tags) {
                     return $coll->put('tags', $tags);
                 }
             )
             ->when(
-                $mf2->get('files'),
+                data_get($mf2, 'files'),
                 function ($coll, $files) {
 
                 }
             )
             ->when(
-                $mf2->get('properties.photo'),
+                data_get($mf2, 'properties.photo'),
                 function ($coll, $photos) {
                     return $coll->put(
                         'photo',
@@ -72,7 +72,7 @@ class MicropubController extends Controller
                 }
             );
 
-        $view = 'types.' . $mf2->get('type.0');
+        $view = 'types.' . data_get($mf2, 'type.0');
         $content = view(
             $view,
             [
@@ -83,8 +83,8 @@ class MicropubController extends Controller
         )->render();
 
         $title = $contentType === 'text'
-            ? substr($mf2->get('properties.content.0'), 0, 200)
-            : (new Html2Text($mf2->get('properties.content.0.html')))->getText();
+            ? substr(data_get($mf2, 'properties.content.0'), 0, 200)
+            : (new Html2Text(data_get($mf2, 'properties.content.0.html')))->getText();
 
         $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
         $slug = $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
