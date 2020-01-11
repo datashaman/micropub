@@ -91,6 +91,9 @@ class MicropubController extends Controller
         $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
         $slug = $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
 
-        dd($frontMatter, $content, $title, $path, $slug);
+        Log::debug(
+            'Micropub output',
+            compact('frontMatter', 'content', 'title', 'path', 'slug')
+        );
     }
 }
