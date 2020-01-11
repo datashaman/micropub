@@ -13,7 +13,7 @@ ssh $DEPLOY_HOST "
   git pull
 
   echo 'Install composer dependencies'
-  composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader
+  composer install --no-ansi --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader
 
   echo 'Install npm dependencies'
   npm install
