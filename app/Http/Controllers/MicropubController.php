@@ -67,11 +67,18 @@ class MicropubController extends Controller
                                 function ($photo) {
                                     Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
+                                    $path = 'docs/.vuepress/public/photo/' . $photo->hashName();
+                                    $content = $photo->get();
+                                    $message = 'posted by ' . config('app.name');
+
+                                    Log::debug('Path', compact('path'));
+
                                     $result = GitHub::repo()->contents()->create(
-                                        'datashaman',
-                                        'www.datashaman.com',
-                                        [
-                                        ]
+                                        config('micropub.github.owner'),
+                                        config('micropub.github.repo'),
+                                        $path,
+                                        $content,
+                                        $message
                                     );
 
                                     Log::debug('GitHub response', compact('response'));
