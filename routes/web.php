@@ -11,9 +11,13 @@
 |
 */
 
-Route::get('', 'HomeController@index')->name('home');
+Route::get('', 'HomeController@index')->name('home')->middleware('auth.indie');
 
 Route::get('login', 'AuthController@login')->name('auth.login');
 Route::post('login', 'AuthController@doLogin');
+
+Route::get('logout', 'AuthController@logout')->name('auth.logout');
+
+Route::post('entry', 'EntryController@store')->name('entry.store');
 
 Route::get('callback', 'AuthController@callback')->name('auth.callback');

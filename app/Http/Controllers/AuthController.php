@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 use IndieAuth\Client;
 
 class AuthController extends Controller
@@ -41,7 +40,14 @@ class AuthController extends Controller
             dd($error);
         }
 
-        Session::put('user', $user);
+        $request->session()->put('user', $user);
+
+        return redirect()->route('home');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->forget('user');
 
         return redirect()->route('home');
     }
