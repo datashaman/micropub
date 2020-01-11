@@ -24,6 +24,6 @@ class MicropubController extends Controller
 
         $mpRequest = MicropubRequest::create($all);
 
-        Log::debug('Micropub request', $mpRequest);
+        Log::debug('Micropub request', $mpRequest->toMf2());
     }
 }
