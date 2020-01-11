@@ -3,27 +3,89 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use Html2Text\Html2Text;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Str;
 use p3k\Micropub\Request as MicropubRequest;
 
 class MicropubController extends Controller
 {
     /**
-     * Handle the incoming request.
-     *
      * @param  \Illuminate\Http\Request  $request
      *
      * @return \Illuminate\Http\Response
      */
     public function __invoke(Request $request)
     {
-        $all = $request->all();
+        $mpRequest = MicropubRequest::create($request->all());
 
-        Log::debug('Request', $all);
+        $mf2 = collect($mpRequest->toMf2());
 
-        $mpRequest = MicropubRequest::create($all);
+        $contentType = is_string($mf2->get('properties.content.0'))
+            ? 'text'
+            : 'html';
 
-        Log::debug('Micropub request', $mpRequest->toMf2());
+        $published = $mf2->has('properties.published')
+            ? Carbon::parse($mf2->get('properties.published'))
+            : Carbon::now();
+
+        $contentType = is_string($mf2->get('properties.content.0'))
+            ? 'text'
+            : 'html';
+
+        $frontMatter = collect()
+            ->merge([
+                'date' => $published,
+                'type' => 'post',
+            ])
+            ->when(
+                $mf2->get('properties.category'),
+                function ($coll, $tags) {
+                    return $coll->put('tags', $tags);
+                }
+            )
+            ->when(
+                $mf2->get('files'),
+                function ($coll, $files) {
+
+                }
+            )
+            ->when(
+                $mf2->get('properties.photo'),
+                function ($coll, $photos) {
+                    return $coll->put(
+                        'photo',
+                        collect($photos)
+                            ->map(
+                                function ($photo) {
+                                    return is_string($photo)
+                                        ? ['value' => $photo]
+                                        : $photo;
+                                }
+                            )
+                            ->all()
+                    );
+                }
+            );
+
+        $view = 'types.' . $mf2->get('type.0');
+        $content = view(
+            $view,
+            [
+                'frontMatter' => trim(yaml_encode($frontMatter)),
+                'post' => $mf2,
+                'published' => $published->toIso8601String(),
+            ]
+        )->render();
+
+        $title = $contentType === 'text'
+            ? substr($mf2->get('properties.content.0'), 0, 200)
+            : (new Html2Text($mf2->get('properties.content.0.html')))->getText();
+
+        $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
+        $slug = $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
+
+        dd($title, $path, $slug);
     }
 }
