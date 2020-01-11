@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Str;
 use p3k\Micropub\Request as MicropubRequest;
+use Symfony\Component\Yaml\Yaml;
 
 class MicropubController extends Controller
 {
@@ -74,7 +75,7 @@ class MicropubController extends Controller
         $content = view(
             $view,
             [
-                'frontMatter' => trim(yaml_encode($frontMatter)),
+                'frontMatter' => trim(Yaml::dump($frontMatter)),
                 'post' => $mf2,
                 'published' => $published->toIso8601String(),
             ]
@@ -87,6 +88,6 @@ class MicropubController extends Controller
         $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
         $slug = $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
 
-        dd($title, $path, $slug);
+        dd($frontMatter, $content, $title, $path, $slug);
     }
 }
