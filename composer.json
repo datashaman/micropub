@@ -10,12 +10,14 @@
     "require": {
         "php": "^7.2",
         "fideloper/proxy": "^4.0",
+        "graham-campbell/github": "^8.4",
         "guzzlehttp/guzzle": "^6.5",
         "html2text/html2text": "^4.2",
         "indieauth/client": "^0.5.2",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^2.0",
         "p3k/micropub": "^0.0.3",
+        "php-http/guzzle6-adapter": "^2.0",
         "symfony/yaml": "^5.0"
     },
     "require-dev": {
