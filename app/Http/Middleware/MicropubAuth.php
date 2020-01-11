@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use GuzzleHttp\Client;
 use Closure;
+use GuzzleHttp\Client;
 
 class MicropubAuth
 {
