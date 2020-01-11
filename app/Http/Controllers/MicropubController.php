@@ -71,7 +71,8 @@ class MicropubController extends Controller
                             ->all()
                     );
                 }
-            );
+            )
+            ->all();
 
         $view = 'types.' . Arr::get($mf2, 'type.0');
         $content = view(
