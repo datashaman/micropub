@@ -65,6 +65,15 @@ class MicropubController extends Controller
                                 function ($photo) {
                                     Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
+                                    $result = GitHub::contents()->create(
+                                        'datashaman',
+                                        'www.datashaman.com',
+                                        [
+                                        ]
+                                    );
+
+                                    Log::debug('GitHub response', compact('response'));
+
                                     return is_string($photo)
                                         ? ['value' => $photo]
                                         : $photo;
