@@ -21,11 +21,14 @@ class MicropubAuth
 
         $client = new Client();
 
-        $user = $client->request('GET', config('indieauth.tokenEndpoint'), [
+        $response = $client->request('GET', config('indieauth.tokenEndpoint'), [
             'headers' => [
                 'Authorization' => "Bearer $accessToken",
             ],
         ]);
+
+        $body = (string) $response->getBody();
+        $user = json_decode($body);
 
         if (!in_array($user['me'], config('indieauth.me'))) {
             abort(403);
