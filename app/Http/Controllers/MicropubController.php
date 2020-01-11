@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GrahamCampbell\GitHub\Facades\GitHub;
 use GuzzleHttp\Client;
 use Html2Text\Html2Text;
 use Illuminate\Http\Request;
