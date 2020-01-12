@@ -147,7 +147,7 @@ class MicropubController extends Controller
 
         return response()->json(
             null,
-            200,
+            204,
             [
                 'Location' => $this->url($request, $slug),
             ]
