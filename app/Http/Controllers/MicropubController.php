@@ -35,7 +35,7 @@ class MicropubController extends Controller
             );
 
             $content = base64_decode($response['content']);
-            $content = Yaml::load($content);
+            $content = Yaml::parse($content);
 
             Log::debug('Found contents', ['content' => $content, 'path' => $path]);
         }
