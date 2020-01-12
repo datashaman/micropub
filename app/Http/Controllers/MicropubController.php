@@ -115,17 +115,14 @@ class MicropubController extends Controller
         }
 
         if ($request->has('add')) {
-            $properties = collect($request->get('add'))
-                ->reduce(
-                    function ($acc, $value, $key) {
-                        $acc[$key] = array_merge(
+            collect($request->get('add'))
+                ->each(
+                    function ($acc, $value) use ($properties) {
+                        $properties->put($key, array_merge(
                             Arr::get($acc, $key, []),
                             $value
-                        );
-
-                        return $acc;
-                    },
-                    $properties
+                        ));
+                    }
                 );
         }
 
