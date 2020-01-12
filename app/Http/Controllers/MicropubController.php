@@ -65,12 +65,12 @@ class MicropubController extends Controller
             )
             ->when(
                 Arr::get($mf2, 'properties.photo'),
-                function ($coll, $photos) {
+                function ($coll, $photos) use ($request) {
                     return $coll->put(
                         'photo',
                         collect($photos)
                             ->map(
-                                function ($photo) {
+                                function ($photo) use ($request) {
                                     Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
                                     $filename = $photo->hashName();
@@ -89,9 +89,9 @@ class MicropubController extends Controller
                                         $message
                                     );
 
-                                    $photo = url($slug);
-
                                     Log::debug('GitHub response', compact('response'));
+
+                                    $photo = $request->session()->get('user.me') . '/' . $slug;
 
                                     return is_string($photo) ? ['value' => $photo] : $photo;
                                 }
