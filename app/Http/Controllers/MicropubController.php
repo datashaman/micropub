@@ -17,11 +17,25 @@ use Symfony\Component\Yaml\Yaml;
 class MicropubController extends Controller
 {
     /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function query(Request $request)
+    {
+        if ($request->get('q') === 'source') {
+            $path = $this->path($request, $request->get('url'));
+
+            Log::debug('Found path', ['path' => $path]);
+        }
+    }
+
+    /**
      * @param  \Illuminate\Http\Request  $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function create(Request $request)
     {
         $mpRequest = MicropubRequest::create($request->all());
 
@@ -152,5 +166,12 @@ class MicropubController extends Controller
     protected function url(Request $request, string $slug)
     {
         return preg_replace('#/$#', '', $request->session()->get('user.me')) . '/' . $slug;
+    }
+
+    protected function path(Request $request, string $url)
+    {
+        $host = preg_replace('#/$#', '', $request->session()->get('user.me')) . '/';
+
+        return str_replace($host, '', $url);
     }
 }

@@ -13,7 +13,10 @@
 
 // Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
 
-Route::post('/', 'MicropubController')->name('micropub')->middleware('auth.micropub');
+Route::group(['middleware' => 'auth.micropub'], function () {
+    Route::get('/', 'MicropubController@query');
+    Route::post('/', 'MicropubController@create');
+});
 
 // Route::get('login', 'AuthController@login')->name('auth.login');
 // Route::post('login', 'AuthController@doLogin');
