@@ -207,7 +207,6 @@ class MicropubController extends Controller
             config('micropub.github.owner'),
             config('micropub.github.repo'),
             $path,
-            $content,
             $message,
             $sha
         );
