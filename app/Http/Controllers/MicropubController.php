@@ -110,10 +110,6 @@ class MicropubController extends Controller
 
         $properties = collect($source['properties']);
 
-        if ($request->has('replace')) {
-            $properties = $properties->merge($request->get('replace'));
-        }
-
         if ($request->has('add')) {
             collect($request->get('add'))
                 ->each(
@@ -124,6 +120,28 @@ class MicropubController extends Controller
                         ));
                     }
                 );
+        }
+
+        if ($request->has('delete')) {
+            collect($request->get('delete'))
+                ->each(
+                    function ($value, $key) use ($properties) {
+                        $original = $properties->get($key, []);
+                        $value = array_diff($original, $value);
+
+                        Log::debug('Delete', compact('original', 'value'));
+
+                        if ($value) {
+                            $properties->put($key, $value);
+                        } else {
+                            $properties->forget($key);
+                        }
+                    }
+                );
+        }
+
+        if ($request->has('replace')) {
+            $properties = $properties->merge($request->get('replace'));
         }
 
         $source['properties'] = $properties->all();
@@ -146,7 +164,7 @@ class MicropubController extends Controller
 
         return response()->json(
             null,
-            201,
+            200,
             [
                 'Location' => $this->url($request, $slug),
             ]
