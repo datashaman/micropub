@@ -40,8 +40,13 @@ class MicropubController extends Controller
         case 'config':
             $config = config('micropub.config', []);
             if (!$config) {
-                return response('{}', 200)
-                    ->headers(['Content-Type' => 'application/json']);
+                return response(
+                    '{}',
+                    200,
+                    [
+                        'Content-Type' => 'application/json',
+                    ]
+                );
             }
 
             return response()->json($config);
