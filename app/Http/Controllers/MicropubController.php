@@ -42,7 +42,7 @@ class MicropubController extends Controller
             Log::debug('Object', ['object' => $object]);
 
             if ($request->has('properties')) {
-                $properties = $source->matter('source.properties') ?: [];
+                $properties = $object->matter('source.properties') ?: [];
 
                 return response()->json(
                     [
