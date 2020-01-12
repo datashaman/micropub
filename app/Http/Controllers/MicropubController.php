@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use p3k\Micropub\Request as MicropubRequest;
+use Spatie\YamlFrontMatter\YamlFrontMatter;
 use Symfony\Component\Yaml\Yaml;
 
 class MicropubController extends Controller
@@ -35,9 +36,10 @@ class MicropubController extends Controller
             );
 
             $content = base64_decode($response['content']);
-            $content = Yaml::parse($content);
+            $object = YamlFrontMatter::parse($content);
+            $source = $object->matter('source');
 
-            Log::debug('Found contents', ['content' => $content, 'path' => $path]);
+            Log::debug('Found source', compact('source'));
         }
     }
 
