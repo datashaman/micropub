@@ -121,7 +121,7 @@ class MicropubController extends Controller
 
         $slug = Arr::has($mf2, 'commands.mp-slug')
             ? Arr::get($mf2, 'commands.mp-slug')
-            : $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
+            : $published->format('Y/m/d') . '/' . Str::slug(strtolower($title)) . '/';
 
         $message = 'posted by ' . config('app.name');
 
