@@ -40,6 +40,8 @@ class MicropubController extends Controller
     public function post(Request $request): JsonResponse
     {
         switch ($request->get('action')) {
+        case 'delete':
+            return $this->delete($request);
         case 'update':
             return $this->update($request);
         default:
@@ -192,6 +194,25 @@ class MicropubController extends Controller
                 'Location' => $this->url($request, $slug),
             ]
         );
+    }
+
+    protected function delete(Request $request)
+    {
+        $url = $request->get('url');
+        $path = $this->path($request, $url);
+        $message = 'posted by ' . config('app.name');
+        [$source, $sha] = $this->source($request, $url);
+
+        $response = GitHub::repo()->contents()->rm(
+            config('micropub.github.owner'),
+            config('micropub.github.repo'),
+            $path,
+            $content,
+            $message,
+            $sha
+        );
+
+        return response()->json(null, 204);
     }
 
     protected function url(Request $request, string $slug): string
