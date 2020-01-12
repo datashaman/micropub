@@ -155,7 +155,7 @@ class MicropubController extends Controller
 
     protected function source(Request $request, string $url): array
     {
-        $path = $this->path($url);
+        $path = $this->path($request, $url);
 
         $response = GitHub::repo()->contents()->show(
             config('micropub.github.owner'),
