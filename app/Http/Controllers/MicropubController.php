@@ -40,6 +40,10 @@ class MicropubController extends Controller
         case 'config':
             $config = config('micropub.config', []);
 
+            if (!$config) {
+                $config = new stdClass();
+            }
+
             return response()->json($config);
         case 'syndicate-to':
             $syndicateTo = config('micropub.config.syndicate-to', []);
