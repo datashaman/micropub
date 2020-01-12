@@ -171,6 +171,7 @@ class MicropubController extends Controller
     protected function path(Request $request, string $url)
     {
         $path = parse_url($url, PHP_URL_PATH);
+        $path = preg_replace(['#^/#', '#/$#'], '', $path);
         $path = str_replace('/', '-', $path);
         $path = str_replace('_', '', $path);
 
