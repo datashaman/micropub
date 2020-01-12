@@ -28,13 +28,16 @@ class MicropubController extends Controller
 
             Log::debug('Looking for path', compact('path'));
 
-            $contents = GitHub::repo()->contents()->show(
+            $response = GitHub::repo()->contents()->show(
                 config('micropub.github.owner'),
                 config('micropub.github.repo'),
                 $path
             );
 
-            Log::debug('Found contents', ['contents' => $contents, 'path' => $path]);
+            $content = base64_decode($response['content']);
+            $content = Yaml::load($content);
+
+            Log::debug('Found contents', ['content' => $content, 'path' => $path]);
         }
     }
 
