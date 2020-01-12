@@ -92,7 +92,19 @@ class MicropubController extends Controller
         $properties = collect($source['properties']);
 
         if ($request->has('add')) {
-            collect($request->get('add'))
+            $add = $request->get('add');
+
+            if (!is_array($add)) {
+                return response()->json(
+                    null,
+                    400,
+                    [
+                        'error' => 'bad_request',
+                    ]
+                );
+            }
+
+            collect($add)
                 ->each(
                     function ($value, $key) use ($properties) {
                         $properties->put($key, array_merge(
@@ -104,7 +116,19 @@ class MicropubController extends Controller
         }
 
         if ($request->has('delete')) {
-            collect($request->get('delete'))
+            $delete = $request->get('delete');
+
+            if (!is_array($delete)) {
+                return response()->json(
+                    null,
+                    400,
+                    [
+                        'error' => 'bad_request',
+                    ]
+                );
+            }
+
+            collect($delete)
                 ->each(
                     function ($value, $key) use ($properties) {
                         if (is_numeric($key) && is_string($value)) {
@@ -124,7 +148,19 @@ class MicropubController extends Controller
         }
 
         if ($request->has('replace')) {
-            $properties = $properties->merge($request->get('replace'));
+            $replace = $request->get('replace');
+
+            if (!is_array($replace)) {
+                return response()->json(
+                    null,
+                    400,
+                    [
+                        'error' => 'bad_request',
+                    ]
+                );
+            }
+
+            $properties = $properties->merge($replace);
         }
 
         Log::debug('Property update', ['original' => $source['properties'], 'value' => $properties->all()]);
