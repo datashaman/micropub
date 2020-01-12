@@ -123,9 +123,19 @@ class MicropubController extends Controller
             ? Arr::get($mf2, 'commands.mp-slug')
             : $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
 
+        $message = 'posted by ' . config('app.name');
+
+        $response = GitHub::repo()->contents()->create(
+            config('micropub.github.owner'),
+            config('micropub.github.repo'),
+            $path,
+            $content,
+            $message
+        );
+
         Log::debug(
-            'Micropub output',
-            compact('frontMatter', 'content', 'title', 'path', 'slug')
+            'Micropub response',
+            compact('content', 'title', 'path', 'slug', 'response')
         );
     }
 
