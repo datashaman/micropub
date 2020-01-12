@@ -22,7 +22,7 @@ class MicropubAuth
         Log::debug('Access token', compact('accessToken'));
 
         if (empty($accessToken)) {
-            abort(401);
+            return response()->json([], 401);
         }
 
         $client = new Client();
@@ -40,7 +40,7 @@ class MicropubAuth
         Log::debug('IndieAuth user', compact('user'));
 
         if (!in_array($user['me'], config('indieauth.me'))) {
-            abort(403);
+            return response()->json([], 403);
         }
 
         $request->session()->put('user', $user);
