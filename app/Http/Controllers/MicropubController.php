@@ -25,47 +25,46 @@ class MicropubController extends Controller
     {
         $mpRequest = MicropubRequest::create($request->all());
 
-        $mf2 = $mpRequest->toMf2();
-        $commands = $mpRequest->commands;
-        Log::debug('Mf2', compact('mf2', 'commands'));
+        $source = $mpRequest->toMf2();
 
-        $contentType = is_string(Arr::get($mf2, 'properties.content.0'))
+        $contentType = is_string(Arr::get($source, 'properties.content.0'))
             ? 'text'
             : 'html';
 
-        $published = Arr::has($mf2, 'properties.published')
-            ? Carbon::parse(Arr::get($mf2, 'properties.published'))
+        $published = Arr::has($source, 'properties.published')
+            ? Carbon::parse(Arr::get($source, 'properties.published'))
             : Carbon::now();
 
-        $contentType = is_string(Arr::get($mf2, 'properties.content.0'))
+        $contentType = is_string(Arr::get($source, 'properties.content.0'))
             ? 'text'
             : 'html';
 
         $frontMatter = collect()
             ->merge([
                 'date' => $published,
+                'source' => $source->all(),
                 'type' => 'post',
             ])
             ->when(
-                Arr::get($mf2, 'commands.mp-slug'),
+                Arr::get($source, 'commands.mp-slug'),
                 function ($coll, $slug) {
                     return $coll->put('slug', $slug);
                 }
             )
             ->when(
-                Arr::get($mf2, 'properties.category'),
+                Arr::get($source, 'properties.category'),
                 function ($coll, $tags) {
                     return $coll->put('tags', $tags);
                 }
             )
             ->when(
-                Arr::get($mf2, 'files'),
+                Arr::get($source, 'files'),
                 function ($coll, $files) {
 
                 }
             )
             ->when(
-                Arr::get($mf2, 'properties.photo'),
+                Arr::get($source, 'properties.photo'),
                 function ($coll, $photos) use ($request) {
                     return $coll->put(
                         'photo',
@@ -105,13 +104,13 @@ class MicropubController extends Controller
             )
             ->all();
 
-        $view = 'types.' . Arr::get($mf2, 'type.0');
+        $view = 'types.' . Arr::get($source, 'type.0');
         $content = view(
             $view,
             [
                 'contentType' => $contentType,
                 'frontMatter' => trim(Yaml::dump($frontMatter)),
-                'post' => $mf2,
+                'post' => $source,
                 'published' => $published->toIso8601String(),
             ]
         )->render();
@@ -122,8 +121,8 @@ class MicropubController extends Controller
 
         $path = "docs/_posts/$nowPath.md";
 
-        $slug = Arr::has($mf2, 'commands.mp-slug')
-            ? Arr::get($mf2, 'commands.mp-slug')
+        $slug = Arr::has($source, 'commands.mp-slug')
+            ? Arr::get($source, 'commands.mp-slug')
             : $nowSlug;
 
         $message = 'posted by ' . config('app.name');
