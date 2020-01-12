@@ -42,7 +42,7 @@ class MicropubController extends Controller
         $frontMatter = collect()
             ->merge([
                 'date' => $published,
-                'source' => $source->all(),
+                'source' => $source,
                 'type' => 'post',
             ])
             ->when(
