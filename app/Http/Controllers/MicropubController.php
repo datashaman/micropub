@@ -116,7 +116,7 @@ class MicropubController extends Controller
             ]
         )->render();
 
-        $timestamp = Carbon::now()->format('X');
+        $timestamp = Carbon::now()->getTimestamp();
         $path = "docs/_posts/$timestamp.md";
 
         $slug = Arr::has($mf2, 'commands.mp-slug')
