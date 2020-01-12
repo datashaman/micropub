@@ -20,8 +20,11 @@ class MicropubController extends Controller
 {
     public function query(Request $request): JsonResponse
     {
-        if ($request->get('q') === 'source') {
-            $source = $this->source($request, $request->get('url'));
+        $q = $request->get('q');
+
+        switch ($q) {
+        case 'source':
+            [$source, $sha] = $this->source($request, $request->get('url'));
 
             if ($request->has('properties')) {
                 $properties = Arr::get($source, 'properties', []);
@@ -34,6 +37,8 @@ class MicropubController extends Controller
             }
 
             return response()->json($source);
+        case 'config':
+            return config('micropub.config', []);
         }
     }
 
