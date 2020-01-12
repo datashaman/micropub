@@ -129,8 +129,6 @@ class MicropubController extends Controller
                         $original = $properties->get($key, []);
                         $value = array_diff($original, $value);
 
-                        Log::debug('Delete', compact('original', 'value'));
-
                         if ($value) {
                             $properties->put($key, $value);
                         } else {
@@ -160,6 +158,8 @@ class MicropubController extends Controller
             $message,
             $sha
         );
+
+        Log::debug('GitHub update', compact('path', 'content', 'response'));
 
         $path = parse_url($url, PHP_URL_PATH);
         $slug = preg_replace('#^/#', '', $path);
