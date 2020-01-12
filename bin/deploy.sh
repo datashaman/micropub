@@ -15,11 +15,11 @@ ssh $DEPLOY_HOST "
   echo 'Install composer dependencies'
   composer install --no-ansi --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader
 
-  echo 'Install npm dependencies'
-  npm install
+  # echo 'Install npm dependencies'
+  # npm install
 
-  echo 'Build assets for production'
-  npm run production
+  # echo 'Build assets for production'
+  # npm run production
 
   echo 'Restart $DEPLOY_SERVICE service'
   sudo systemctl restart $DEPLOY_SERVICE
