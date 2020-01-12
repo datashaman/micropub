@@ -6,6 +6,7 @@ use GrahamCampbell\GitHub\Facades\GitHub;
 use GuzzleHttp\Client;
 use Html2Text\Html2Text;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -71,27 +72,29 @@ class MicropubController extends Controller
                         collect($photos)
                             ->map(
                                 function ($photo) use ($request) {
-                                    Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
+                                    if ($photo instanceof UploadedFile) {
+                                        Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
-                                    $filename = $photo->hashName();
-                                    $path = 'docs/.vuepress/public/photo/' . $filename;
-                                    $slug = 'photo/' . $filename;
-                                    $content = $photo->get();
-                                    $message = 'posted by ' . config('app.name');
+                                        $filename = $photo->hashName();
+                                        $path = 'docs/.vuepress/public/photo/' . $filename;
+                                        $slug = 'photo/' . $filename;
+                                        $content = $photo->get();
+                                        $message = 'posted by ' . config('app.name');
 
-                                    Log::debug('Path', compact('path'));
+                                        Log::debug('Path', compact('path'));
 
-                                    $response = GitHub::repo()->contents()->create(
-                                        config('micropub.github.owner'),
-                                        config('micropub.github.repo'),
-                                        $path,
-                                        $content,
-                                        $message
-                                    );
+                                        $response = GitHub::repo()->contents()->create(
+                                            config('micropub.github.owner'),
+                                            config('micropub.github.repo'),
+                                            $path,
+                                            $content,
+                                            $message
+                                        );
 
-                                    Log::debug('GitHub response', compact('response'));
+                                        Log::debug('GitHub response', compact('response'));
 
-                                    $photo = $this->url($request, $slug);
+                                        $photo = $this->url($request, $slug);
+                                    }
 
                                     return is_string($photo) ? ['value' => $photo] : $photo;
                                 }
