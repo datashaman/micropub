@@ -172,6 +172,10 @@ class MicropubController extends Controller
     {
         $host = preg_replace('#/$#', '', $request->session()->get('user.me')) . '/';
 
-        return str_replace($host, '', $url);
+        return str_replace(
+            '/',
+            '-',
+            preg_replace('#/$#', '', str_replace($host, '', $url)) . '.md'
+        );
     }
 }
