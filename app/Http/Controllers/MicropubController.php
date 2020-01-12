@@ -109,7 +109,7 @@ class MicropubController extends Controller
             $view,
             [
                 'contentType' => $contentType,
-                'frontMatter' => trim(Yaml::dump($frontMatter, -1)),
+                'frontMatter' => trim(Yaml::dump($frontMatter, 10)),
                 'post' => $source,
                 'published' => $published->toIso8601String(),
             ]
