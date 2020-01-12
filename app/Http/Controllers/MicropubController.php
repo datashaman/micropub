@@ -116,12 +116,13 @@ class MicropubController extends Controller
             ]
         )->render();
 
-        $timestamp = Carbon::now()->getTimestamp();
-        $path = "docs/_posts/$timestamp.md";
+        $now = Carbon::now();
+
+        $path = 'docs/_posts/' . Str::slug($now->toDateTimeString()) . '.md';
 
         $slug = Arr::has($mf2, 'commands.mp-slug')
             ? Arr::get($mf2, 'commands.mp-slug')
-            : "$timestamp/";
+            : $now->getTimestamp() . '/';
 
         $message = 'posted by ' . config('app.name');
 
