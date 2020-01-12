@@ -91,7 +91,7 @@ class MicropubController extends Controller
 
                                     Log::debug('GitHub response', compact('response'));
 
-                                    $photo = $request->session()->get('user.me') . '/' . $slug;
+                                    $photo = $this->url($request, $slug);
 
                                     return is_string($photo) ? ['value' => $photo] : $photo;
                                 }
@@ -127,5 +127,10 @@ class MicropubController extends Controller
             'Micropub output',
             compact('frontMatter', 'content', 'title', 'path', 'slug')
         );
+    }
+
+    protected function url(Request $request, string $slug)
+    {
+        return preg_replace('#/$#', '', $request->session()->get('user.me')) . '/' . $slug;
     }
 }
