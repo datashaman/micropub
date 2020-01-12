@@ -117,9 +117,9 @@ class MicropubController extends Controller
         if ($request->has('add')) {
             collect($request->get('add'))
                 ->each(
-                    function ($acc, $value) use ($properties) {
+                    function ($value, $key) use ($properties) {
                         $properties->put($key, array_merge(
-                            Arr::get($acc, $key, []),
+                            $properties->get($key, []),
                             $value
                         ));
                     }
