@@ -144,6 +144,8 @@ class MicropubController extends Controller
             $properties = $properties->merge($request->get('replace'));
         }
 
+        Log::debug('Property update', ['original' => $source['properties'], 'value' => $properties->all()]);
+
         $source['properties'] = $properties->all();
 
         $path = $this->path($request, $url);
