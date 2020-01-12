@@ -42,9 +42,13 @@ class MicropubController extends Controller
 
             return response()->json($config);
         case 'syndicate-to':
-            $config = config('micropub.config.syndicate-to', []);
+            $syndicateTo = config('micropub.config.syndicate-to', []);
 
-            return response()->json($config);
+            return response()->json(
+                [
+                    'syndicate-to' => $syndicateTo,
+                ]
+            );
         }
     }
 
