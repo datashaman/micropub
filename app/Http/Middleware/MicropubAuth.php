@@ -21,6 +21,10 @@ class MicropubAuth
         $accessToken = $request->get('access_token') ?: $request->bearerToken();
         Log::debug('Access token', compact('accessToken'));
 
+        if (empty($accessToken)) {
+            abort(401);
+        }
+
         $client = new Client();
 
         $response = $client->request('GET', config('indieauth.tokenEndpoint'), [
