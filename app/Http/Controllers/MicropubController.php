@@ -108,10 +108,28 @@ class MicropubController extends Controller
 
         [$source, $sha] = $this->source($request, $url);
 
-        $source['properties'] = array_merge(
-            $source['properties'],
-            $request->get('replace')
-        );
+        $properties = collect($source['properties']);
+
+        if ($request->has('replace')) {
+            $properties = $properties->merge($request->get('replace'));
+        }
+
+        if ($request->has('add')) {
+            $properties = collect($request->get('add'))
+                ->reduce(
+                    function ($acc, $value, $key) {
+                        $acc[$key] = array_merge(
+                            Arr::get($acc, $key, []),
+                            $value
+                        );
+
+                        return $acc;
+                    },
+                    $properties
+                );
+        }
+
+        $source['properties'] = $properties->all();
 
         $path = $this->path($request, $url);
         $content = $this->content($request, $path, $source);
