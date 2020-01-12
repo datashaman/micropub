@@ -106,7 +106,6 @@ class MicropubController extends Controller
 
         $url = $request->get('url');
 
-        $path = $this->path($request, $url);
         [$source, $sha] = $this->source($request, $url);
 
         $source['properties'] = array_merge(
@@ -114,7 +113,9 @@ class MicropubController extends Controller
             $request->get('replace')
         );
 
+        $path = $this->path($request, $url);
         $content = $this->content($request, $path, $source);
+        $message = 'posted by ' . config('app.name');
 
         $response = GitHub::repo()->contents()->update(
             config('micropub.github.owner'),
