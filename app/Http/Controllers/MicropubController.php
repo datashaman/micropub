@@ -117,7 +117,7 @@ class MicropubController extends Controller
             ? substr(Arr::get($mf2, 'properties.content.0'), 0, 200)
             : (new Html2Text(Arr::get($mf2, 'properties.content.0.html')))->getText();
 
-        $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
+        $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title)) . '.md';
 
         $slug = Arr::has($mf2, 'commands.mp-slug')
             ? Arr::get($mf2, 'commands.mp-slug')
