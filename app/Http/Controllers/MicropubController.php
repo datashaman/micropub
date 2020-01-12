@@ -25,21 +25,7 @@ class MicropubController extends Controller
     public function query(Request $request)
     {
         if ($request->get('q') === 'source') {
-            $path = $this->path($request, $request->get('url'));
-
-            Log::debug('Looking for path', compact('path'));
-
-            $response = GitHub::repo()->contents()->show(
-                config('micropub.github.owner'),
-                config('micropub.github.repo'),
-                $path
-            );
-
-            $content = base64_decode($response['content']);
-            $object = YamlFrontMatter::parse($content);
-            $source = $object->matter('source');
-
-            Log::debug('Object', ['object' => $object]);
+            $source = $this->source($request, $request->get('url'));
 
             if ($request->has('properties')) {
                 $properties = Arr::get($source, 'properties', []);
@@ -60,12 +46,133 @@ class MicropubController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function post(Request $request)
+    {
+        switch ($request->get('action')) {
+        case 'update':
+            return $this->update($request);
+        default:
+            return $this->create($request);
+        }
+    }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create(Request $request)
     {
-        $mpRequest = MicropubRequest::create($request->all());
+        $source = MicropubRequest::create($request->all())->toMf2();
 
-        $source = $mpRequest->toMf2();
+        $now = Carbon::now();
 
+        $nowPath = Str::slug($now->toDateTimeString());
+        $nowSlug = $now->format('Y/m/d/_His/');
+
+        $path = "docs/_posts/$nowPath.md";
+        $content = $this->content($request, $path, $source);
+        $message = 'posted by ' . config('app.name');
+
+        $response = GitHub::repo()->contents()->create(
+            config('micropub.github.owner'),
+            config('micropub.github.repo'),
+            $path,
+            $content,
+            $message
+        );
+
+        $slug = Arr::has($source, 'commands.mp-slug')
+            ? Arr::get($source, 'commands.mp-slug')
+            : $nowSlug;
+
+        return response()->json(
+            null,
+            201,
+            [
+                'Location' => $this->url($request, $slug),
+            ]
+        );
+    }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request)
+    {
+        $update = MicropubRequest::create($request->all())->toMf2();
+
+        $url = $request->get('url');
+
+        $path = $this->path($request, $url);
+        [$source, $sha] = $this->source($request, $url);
+
+        $source['properties'] = array_merge(
+            $source['properties'],
+            $request->get('replace')
+        );
+
+        $content = $this->content($request, $path, $source);
+
+        $response = GitHub::repo()->contents()->update(
+            config('micropub.github.owner'),
+            config('micropub.github.repo'),
+            $path,
+            $content,
+            $message,
+            $sha
+        );
+
+        $path = parse_url($url, PHP_URL_PATH);
+        $slug = preg_replace('#^/#', '', $path);
+
+        return response()->json(
+            null,
+            201,
+            [
+                'Location' => $this->url($request, $slug),
+            ]
+        );
+    }
+
+    protected function url(Request $request, string $slug): string
+    {
+        return preg_replace('#/$#', '', $request->session()->get('user.me')) . '/' . $slug;
+    }
+
+    protected function path(Request $request, string $url): string
+    {
+        $path = parse_url($url, PHP_URL_PATH);
+        $path = preg_replace(['#^/#', '#/$#'], '', $path);
+        $path = str_replace('/', '-', $path);
+        $path = str_replace('_', '', $path);
+
+        return "docs/_posts/$path.md";
+    }
+
+    protected function source(Request $request, string $url): array
+    {
+        $path = $this->path($url);
+
+        $response = GitHub::repo()->contents()->show(
+            config('micropub.github.owner'),
+            config('micropub.github.repo'),
+            $path
+        );
+
+        $content = base64_decode($response['content']);
+        $object = YamlFrontMatter::parse($content);
+
+        return [$object->matter('source'), $response['sha']];
+    }
+
+    protected function content(
+        Request $request,
+        string $path,
+        array $source
+    ): string {
         $contentType = is_string(Arr::get($source, 'properties.content.0'))
             ? 'text'
             : 'html';
@@ -144,7 +251,8 @@ class MicropubController extends Controller
             ->all();
 
         $view = 'types.' . Arr::get($source, 'type.0');
-        $content = view(
+
+        return view(
             $view,
             [
                 'contentType' => $contentType,
@@ -153,53 +261,5 @@ class MicropubController extends Controller
                 'published' => $published->toIso8601String(),
             ]
         )->render();
-
-        $now = Carbon::now();
-        $nowPath = Str::slug($now->toDateTimeString());
-        $nowSlug = $now->format('Y/m/d/_His/');
-
-        $path = "docs/_posts/$nowPath.md";
-
-        $slug = Arr::has($source, 'commands.mp-slug')
-            ? Arr::get($source, 'commands.mp-slug')
-            : $nowSlug;
-
-        $message = 'posted by ' . config('app.name');
-
-        $response = GitHub::repo()->contents()->create(
-            config('micropub.github.owner'),
-            config('micropub.github.repo'),
-            $path,
-            $content,
-            $message
-        );
-
-        Log::debug(
-            'Micropub response',
-            compact('content', 'path', 'slug', 'response')
-        );
-
-        return response()->json(
-            null,
-            201,
-            [
-                'Location' => $this->url($request, $slug),
-            ]
-        );
-    }
-
-    protected function url(Request $request, string $slug)
-    {
-        return preg_replace('#/$#', '', $request->session()->get('user.me')) . '/' . $slug;
-    }
-
-    protected function path(Request $request, string $url)
-    {
-        $path = parse_url($url, PHP_URL_PATH);
-        $path = preg_replace(['#^/#', '#/$#'], '', $path);
-        $path = str_replace('/', '-', $path);
-        $path = str_replace('_', '', $path);
-
-        return "docs/_posts/$path.md";
     }
 }

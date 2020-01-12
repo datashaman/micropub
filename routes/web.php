@@ -15,7 +15,7 @@
 
 Route::group(['middleware' => 'auth.micropub'], function () {
     Route::get('/', 'MicropubController@query');
-    Route::post('/', 'MicropubController@create');
+    Route::post('/', 'MicropubController@post');
 });
 
 // Route::get('login', 'AuthController@login')->name('auth.login');
