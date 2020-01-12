@@ -108,7 +108,9 @@ class MicropubController extends Controller
             : (new Html2Text(Arr::get($mf2, 'properties.content.0.html')))->getText();
 
         $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
-        $slug = $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
+        $slug = Arr::has($mf2, 'commands.mp-slug')
+            ? Arr::get($mf2, 'commands.mp-slug')
+            : $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
 
         Log::debug(
             'Micropub output',
