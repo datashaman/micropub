@@ -39,7 +39,7 @@ class MicropubController extends Controller
             $object = YamlFrontMatter::parse($content);
             $source = $object->matter('source');
 
-            Log::debug('Found source', compact('source'));
+            return response()->json($source);
         }
     }
 
