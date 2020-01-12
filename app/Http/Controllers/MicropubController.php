@@ -46,6 +46,12 @@ class MicropubController extends Controller
                 'type' => 'post',
             ])
             ->when(
+                Arr::get($mf2, 'commands.mp-slug'),
+                function ($coll, $slug) {
+                    return $coll->put('slug', $slug);
+                }
+            )
+            ->when(
                 Arr::get($mf2, 'properties.category'),
                 function ($coll, $tags) {
                     return $coll->put('tags', $tags);
@@ -67,7 +73,9 @@ class MicropubController extends Controller
                                 function ($photo) {
                                     Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
-                                    $path = 'docs/.vuepress/public/photo/' . $photo->hashName();
+                                    $filename = $photo->hashName();
+                                    $path = 'docs/.vuepress/public/photo/' . $filename;
+                                    $slug = 'photo/' . $filename;
                                     $content = $photo->get();
                                     $message = 'posted by ' . config('app.name');
 
@@ -80,6 +88,8 @@ class MicropubController extends Controller
                                         $content,
                                         $message
                                     );
+
+                                    $photo = url($slug);
 
                                     Log::debug('GitHub response', compact('response'));
 
@@ -108,6 +118,7 @@ class MicropubController extends Controller
             : (new Html2Text(Arr::get($mf2, 'properties.content.0.html')))->getText();
 
         $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title));
+
         $slug = Arr::has($mf2, 'commands.mp-slug')
             ? Arr::get($mf2, 'commands.mp-slug')
             : $published->format('Y/m/d') . '/' . Str::slug(strtolower($title));
