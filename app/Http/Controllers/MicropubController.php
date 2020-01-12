@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use GrahamCampbell\GitHub\Facades\GitHub;
 use GuzzleHttp\Client;
 use Html2Text\Html2Text;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -17,12 +18,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class MicropubController extends Controller
 {
-    /**
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function query(Request $request)
+    public function query(Request $request): JsonResponse
     {
         if ($request->get('q') === 'source') {
             $source = $this->source($request, $request->get('url'));
@@ -41,12 +37,7 @@ class MicropubController extends Controller
         }
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function post(Request $request)
+    public function post(Request $request): JsonResponse
     {
         switch ($request->get('action')) {
         case 'update':
@@ -56,12 +47,7 @@ class MicropubController extends Controller
         }
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
+    protected function create(Request $request): JsonResponse
     {
         $source = MicropubRequest::create($request->all())->toMf2();
 
@@ -95,12 +81,7 @@ class MicropubController extends Controller
         );
     }
 
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
+    protected function update(Request $request): JsonResponse
     {
         $update = MicropubRequest::create($request->all())->toMf2();
 
