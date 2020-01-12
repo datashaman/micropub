@@ -2,7 +2,7 @@
 
 return [
     'me' => [
-        'https://www.datashaman.com/',
+        'https://datashaman.com/',
     ],
     'tokenEndpoint' => 'https://tokens.indieauth.com/token',
 ];
