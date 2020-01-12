@@ -26,6 +26,8 @@ class MicropubController extends Controller
         if ($request->get('q') === 'source') {
             $path = $this->path($request, $request->get('url'));
 
+            Log::debug('Looking for path', compact('path'));
+
             $contents = GitHub::repo()->contents()->show(
                 config('micropub.github.owner'),
                 config('micropub.github.repo'),
