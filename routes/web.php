@@ -11,15 +11,15 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
+// Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
 
-Route::post('micropub', 'MicropubController')->name('micropub')->middleware('auth.micropub');
+Route::post('/', 'MicropubController')->name('micropub')->middleware('auth.micropub');
 
-Route::get('login', 'AuthController@login')->name('auth.login');
-Route::post('login', 'AuthController@doLogin');
+// Route::get('login', 'AuthController@login')->name('auth.login');
+// Route::post('login', 'AuthController@doLogin');
 
-Route::get('logout', 'AuthController@logout')->name('auth.logout');
+// Route::get('logout', 'AuthController@logout')->name('auth.logout');
 
-Route::post('entry', 'EntryController@store')->name('entry.store');
+// Route::post('entry', 'EntryController@store')->name('entry.store');
 
-Route::get('callback', 'AuthController@callback')->name('auth.callback');
+// Route::get('callback', 'AuthController@callback')->name('auth.callback');
