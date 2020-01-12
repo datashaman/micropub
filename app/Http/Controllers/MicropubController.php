@@ -118,7 +118,7 @@ class MicropubController extends Controller
 
         $now = Carbon::now();
         $nowPath = Str::slug($now->toDateTimeString());
-        $nowSlug = $now->format('Y/MM/DD/_HHmmss/');
+        $nowSlug = $now->format('Y/m/d/_His/');
 
         $path = "docs/_posts/$nowPath.md";
 
