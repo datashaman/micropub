@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use p3k\Micropub\Request as MicropubRequest;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
+use stdClass;
 use Symfony\Component\Yaml\Yaml;
 
 class MicropubController extends Controller
