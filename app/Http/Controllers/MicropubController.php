@@ -73,7 +73,7 @@ class MicropubController extends Controller
 
                                     Log::debug('Path', compact('path'));
 
-                                    $result = GitHub::repo()->contents()->create(
+                                    $response = GitHub::repo()->contents()->create(
                                         config('micropub.github.owner'),
                                         config('micropub.github.repo'),
                                         $path,
@@ -83,9 +83,7 @@ class MicropubController extends Controller
 
                                     Log::debug('GitHub response', compact('response'));
 
-                                    return is_string($photo)
-                                        ? ['value' => $photo]
-                                        : $photo;
+                                    return is_string($photo) ? ['value' => $photo] : $photo;
                                 }
                             )
                             ->all()
