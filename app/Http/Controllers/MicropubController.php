@@ -107,13 +107,17 @@ class MicropubController extends Controller
             collect($request->get('delete'))
                 ->each(
                     function ($value, $key) use ($properties) {
-                        $original = $properties->get($key, []);
-                        $value = array_diff($original, $value);
-
-                        if ($value) {
-                            $properties->put($key, $value);
+                        if (is_numeric($key) && is_string($value)) {
+                            $properties->forget($value);
                         } else {
-                            $properties->forget($key);
+                            $original = $properties->get($key, []);
+                            $value = array_diff($original, $value);
+
+                            if ($value) {
+                                $properties->put($key, $value);
+                            } else {
+                                $properties->forget($key);
+                            }
                         }
                     }
                 );
