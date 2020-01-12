@@ -39,6 +39,16 @@ class MicropubController extends Controller
             $object = YamlFrontMatter::parse($content);
             $source = $object->matter('source');
 
+            if ($request->has('properties')) {
+                $properties = $source->matter('source.properties') ?: [];
+
+                return response()->json(
+                    [
+                        'properties' => $properties->only($request->get('properties')),
+                    ]
+                );
+            }
+
             return response()->json($source);
         }
     }
