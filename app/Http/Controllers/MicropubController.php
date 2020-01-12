@@ -116,29 +116,26 @@ class MicropubController extends Controller
             ]
         )->render();
 
-        $title = $contentType === 'text'
-            ? substr(Arr::get($mf2, 'properties.content.0'), 0, 200)
-            : (new Html2Text(Arr::get($mf2, 'properties.content.0.html')))->getText();
-
-        $path = $published->format('Y-m-d') . '-' . Str::slug(strtolower($title)) . '.md';
+        $timestamp = Carbon::now()->format('X');
+        $path = "docs/_posts/$timestamp.md";
 
         $slug = Arr::has($mf2, 'commands.mp-slug')
             ? Arr::get($mf2, 'commands.mp-slug')
-            : $published->format('Y/m/d') . '/' . Str::slug(strtolower($title)) . '/';
+            : "$timestamp/";
 
         $message = 'posted by ' . config('app.name');
 
         $response = GitHub::repo()->contents()->create(
             config('micropub.github.owner'),
             config('micropub.github.repo'),
-            'docs/_posts/' . $path,
+            $path,
             $content,
             $message
         );
 
         Log::debug(
             'Micropub response',
-            compact('content', 'title', 'path', 'slug', 'response')
+            compact('content', 'path', 'slug', 'response')
         );
 
         return response()->json(
