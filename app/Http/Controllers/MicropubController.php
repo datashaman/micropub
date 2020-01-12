@@ -46,7 +46,7 @@ class MicropubController extends Controller
 
                 return response()->json(
                     [
-                        'properties' => Arr::get($properties, $request->get('properties')),
+                        'properties' => Arr::only($properties, $request->get('properties')),
                     ]
                 );
             }
