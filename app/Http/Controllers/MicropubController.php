@@ -128,7 +128,7 @@ class MicropubController extends Controller
         $response = GitHub::repo()->contents()->create(
             config('micropub.github.owner'),
             config('micropub.github.repo'),
-            $path,
+            'docs/_posts/' . $path,
             $content,
             $message
         );
@@ -136,6 +136,13 @@ class MicropubController extends Controller
         Log::debug(
             'Micropub response',
             compact('content', 'title', 'path', 'slug', 'response')
+        );
+
+        return response()->json(
+            [
+                'url' => $this->url($request, $slug),
+            ],
+            201
         );
     }
 
