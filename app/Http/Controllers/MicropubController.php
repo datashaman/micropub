@@ -38,7 +38,7 @@ class MicropubController extends Controller
 
             return response()->json($source);
         case 'config':
-            return config('micropub.config', []);
+            return response()->json(config('micropub.config', []));
         }
     }
 
