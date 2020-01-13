@@ -39,7 +39,7 @@ class MicropubAuth
 
         Log::debug('IndieAuth user', compact('user'));
 
-        if (!in_array($user['me'], config('indieauth.me'))) {
+        if (!in_array($user['me'], config('indieauth.authorized'))) {
             return response()->json(['error' => 'forbidden'], 403);
         }
 

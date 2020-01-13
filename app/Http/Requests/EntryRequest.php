@@ -13,7 +13,7 @@ class EntryRequest extends FormRequest
      */
     public function authorize()
     {
-        return in_array($this->session()->get('user.me'), config('indieauth.me'));
+        return in_array($this->session()->get('user.me'), config('indieauth.authorized'));
     }
 
     /**
