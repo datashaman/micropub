@@ -13,7 +13,6 @@ class GithubController extends Controller
 
     public function callback()
     {
-        dd(Socialite::driver('github'));
         $user = Socialite::driver('github')->user();
 
         dd($user);
