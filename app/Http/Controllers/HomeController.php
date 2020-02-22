@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use GrahamCampbell\GitHub\Facades\GitHubFactory;
+use GrahamCampbell\GitHub\GitHubFactory;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
