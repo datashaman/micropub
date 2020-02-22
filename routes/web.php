@@ -11,18 +11,25 @@
 |
 */
 
-// Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
+Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
 
-Route::group(['middleware' => 'auth.micropub'], function () {
-    Route::get('/', 'MicropubController@query');
-    Route::post('/', 'MicropubController@post');
-});
+Route::middleware(['auth.micropub'])
+    ->prefix('micropub')
+    ->group(
+        function () {
+            Route::get('/', 'MicropubController@query');
+            Route::post('/', 'MicropubController@post');
+        }
+    );
 
-// Route::get('login', 'AuthController@login')->name('auth.login');
-// Route::post('login', 'AuthController@doLogin');
+Route::get('login', 'AuthController@login')->name('auth.login');
+Route::post('login', 'AuthController@doLogin');
 
-// Route::get('logout', 'AuthController@logout')->name('auth.logout');
+Route::get('logout', 'AuthController@logout')->name('auth.logout');
 
-// Route::post('entry', 'EntryController@store')->name('entry.store');
+Route::post('entry', 'EntryController@store')->name('entry.store');
 
-// Route::get('callback', 'AuthController@callback')->name('auth.callback');
+Route::get('callback', 'AuthController@callback')->name('auth.callback');
+
+Route::get('login/github', 'LoginController@redirectToProvider');
+Route::get('login/github/callback', 'LoginController@handleProviderCallback');
