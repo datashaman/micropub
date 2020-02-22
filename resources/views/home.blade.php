@@ -5,7 +5,7 @@
 
 @auth
     <div>
-        Logged in to <a href="https://github.com">GitHub</a> as {{ auth()->user()->name }}.
+        Logged in to <a href="https://github.com">GitHub</a> as <a href="https://github.com/{{ auth()->user()->name }}">{{ auth()->user()->name }}</a>.
         <a href="{{ route('github.logout') }}">Logout</a>
     </div>
 @endauth
