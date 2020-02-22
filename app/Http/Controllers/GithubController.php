@@ -10,7 +10,9 @@ class GithubController extends Controller
 {
     public function login()
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver('github')
+            ->scopes(['repo'])
+            ->redirect();
     }
 
     public function logout()

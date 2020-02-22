@@ -12,13 +12,6 @@ class HomeController extends Controller
         $repositories = [];
 
         if (auth()->check()) {
-            $connection = resolve(GitHubFactory::class)->make(
-                [
-                    'method' => 'jwt',
-                    'token' => auth()->user()->token,
-                ]
-            );
-
             dd($connection->me()->repositories());
         }
 
