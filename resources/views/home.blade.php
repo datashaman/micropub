@@ -10,6 +10,11 @@
         as <a href="https://github.com/{{ auth()->user()->name }}" target="_blank" rel="noopener noreferrer">{{ auth()->user()->name }}</a>.
         <a href="{{ route('github.logout') }}">Logout</a>
     </div>
+
+    <select>
+        @foreach($repositories as $repo)
+        @endforeach
+    </select>
 @endauth
 
 @guest
