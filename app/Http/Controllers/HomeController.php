@@ -14,8 +14,13 @@ class HomeController extends Controller
 
         if (auth()->check()) {
             $user = auth()->user();
-            $socialUser = Socialite::driver($user->provider)->userFromToken(decrypt($user->token));
-            dd($socialUser);
+            $connection = resolve(GitHubFactory::class)->make(
+                [
+                    'method' => 'token',
+                    'token' => decrypt($user->token),
+                ]
+            );
+            dd($connection->me()->repositories());
         }
 
         return view('home');
