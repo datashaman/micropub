@@ -12,7 +12,7 @@ class HomeController extends Controller
         $repositories = [];
 
         if (auth()->check()) {
-            $connection = GitHubFactory::make(
+            $connection = resolve(GitHubFactory::class)->make(
                 [
                     'method' => 'token',
                     'token' => auth()->user()->token,
