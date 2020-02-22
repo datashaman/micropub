@@ -6,14 +6,14 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use IndieAuth\Client;
 
-class AuthController extends Controller
+class IndieAuthController extends Controller
 {
     public function __construct()
     {
         session_start();
 
         Client::$clientID = route('home');
-        Client::$redirectURL = route('auth.callback');
+        Client::$redirectURL = route('indieauth.callback');
     }
 
     public function login()

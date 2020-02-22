@@ -22,14 +22,10 @@ Route::middleware(['auth.micropub'])
         }
     );
 
-Route::get('login', 'AuthController@login')->name('auth.login');
-Route::post('login', 'AuthController@doLogin');
+Route::get('indieauth/login', 'IndieAuthController@login')->name('indieauth.login');
+Route::post('indieauth/login', 'IndieAuthController@doLogin')->name('indieauth.do-login');
+Route::get('indieauth/logout', 'IndieAuthController@logout')->name('indieauth.logout');
+Route::get('indieauth/callback', 'IndieAuthController@callback')->name('indieauth.callback');
 
-Route::get('logout', 'AuthController@logout')->name('auth.logout');
-
-Route::post('entry', 'EntryController@store')->name('entry.store');
-
-Route::get('callback', 'AuthController@callback')->name('auth.callback');
-
-Route::get('github/redirect', 'GitHubController@redirect')->name('github.redirect');
-Route::get('github/callback', 'GitHubController@callback');
+Route::get('github/redirect', 'GithubController@redirect')->name('github.redirect');
+Route::get('github/callback', 'GithubController@callback');
