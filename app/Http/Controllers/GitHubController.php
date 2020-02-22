@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Socialite;
 
-class LoginController extends Controller
+class GitHubController extends Controller
 {
     public function redirect()
     {
