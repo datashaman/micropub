@@ -12,7 +12,9 @@ class HomeController extends Controller
         $repositories = [];
 
         if (auth()->check()) {
-            dd($connection->me()->repositories());
+            $user = auth()->user();
+            $socialUser = Socialite::driver($user->provider)->userFromToken(decrypt($user->token));
+            dd($socialUser);
         }
 
         return view('home');
