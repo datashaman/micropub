@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GrahamCampbell\GitHub\GitHubFactory;
 use Illuminate\Http\Request;
+use Socialite;
 
 class HomeController extends Controller
 {
