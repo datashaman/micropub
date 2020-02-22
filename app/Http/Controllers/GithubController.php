@@ -25,8 +25,10 @@ class GithubController extends Controller
                 'email' => $socialUser->getEMail(),
                 'name' => $socialUser->getName(),
                 'nickname' => $socialUser->getNickname(),
-                'token' => $user->token,
+                'token' => $socialUser->token,
             ]
         );
+
+        return $user;
     }
 }
