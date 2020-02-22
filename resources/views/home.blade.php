@@ -3,6 +3,14 @@ Logged in as <a href="{{ Session::get('user.me') }}">{{ Session::get('user.me') 
 <a href="{{ route('indieauth.logout') }}">Logout</a>
 </div>
 
-<div>
-    <a href="{{ route('github.redirect') }}">Link GitHub</a>
-</div>
+@auth
+    <div>
+        Logged in as {{ auth()->user()->name }}.
+    </div>
+@endauth
+
+@guest
+    <div>
+        <a href="{{ route('github.redirect') }}">Login with GitHub</a>
+    </div>
+@endguest
