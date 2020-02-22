@@ -8,9 +8,16 @@ use Socialite;
 
 class GithubController extends Controller
 {
-    public function redirect()
+    public function login()
     {
         return Socialite::driver('github')->redirect();
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return redirect()->route('home');
     }
 
     public function callback()

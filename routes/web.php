@@ -27,5 +27,6 @@ Route::post('indieauth/login', 'IndieAuthController@doLogin')->name('indieauth.d
 Route::get('indieauth/logout', 'IndieAuthController@logout')->name('indieauth.logout');
 Route::get('indieauth/callback', 'IndieAuthController@callback')->name('indieauth.callback');
 
-Route::get('github/redirect', 'GithubController@redirect')->name('github.redirect');
+Route::get('github/login', 'GithubController@login')->name('github.login');
+Route::get('github/logout', 'GithubController@logout')->name('github.logout');
 Route::get('github/callback', 'GithubController@callback');

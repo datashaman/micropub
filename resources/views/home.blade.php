@@ -1,16 +1,17 @@
 <div>
-Logged in as <a href="{{ Session::get('user.me') }}">{{ Session::get('user.me') }}</a>  with scope(s) <em>{{ Session::get('user.scope') }}</em>.
-<a href="{{ route('indieauth.logout') }}">Logout</a>
+    Logged in <a href="https://indieauth.com">IndieAuth</a> as <a href="{{ Session::get('user.me') }}">{{ Session::get('user.me') }}</a>  with scope(s) <em>{{ Session::get('user.scope') }}</em>.
+    <a href="{{ route('indieauth.logout') }}">Logout</a>
 </div>
 
 @auth
     <div>
-        Logged in as {{ auth()->user()->name }}.
+        Logged in to <a href="https://github.com">GitHub</a> as {{ auth()->user()->name }}.
+        <a href="{{ route('github.logout') }}">Logout</a>
     </div>
 @endauth
 
 @guest
     <div>
-        <a href="{{ route('github.redirect') }}">Login with GitHub</a>
+        <a href="{{ route('github.login') }}">Login with GitHub</a>
     </div>
 @endguest
