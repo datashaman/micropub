@@ -18,7 +18,8 @@ class GithubController extends Controller
 
         $user = User::updateOrCreate(
             [
-                'id' => $socialUser->getId(),
+                'provider' => 'github',
+                'provider_id' => $socialUser->getId(),
             ],
             [
                 'avatar' => $socialUser->getAvatar(),
