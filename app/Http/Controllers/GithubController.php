@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Socialite;
 
 class GithubController extends Controller
@@ -13,8 +14,19 @@ class GithubController extends Controller
 
     public function callback()
     {
-        $user = Socialite::driver('github')->user();
+        $socialUser = Socialite::driver('github')->user();
 
-        dd($user);
+        $user = User::updateOrCreate(
+            [
+                'id' => $socialUser->getId(),
+            ],
+            [
+                'avatar' => $socialUser->getAvatar(),
+                'email' => $socialUser->getEMail(),
+                'name' => $socialUser->getName(),
+                'nickname' => $socialUser->getNickname(),
+                'token' => $user->token,
+            ]
+        );
     }
 }
