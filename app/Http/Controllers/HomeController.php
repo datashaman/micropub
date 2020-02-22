@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use GrahamCampbell\GitHub\Facades\GitHub;
+use GrahamCampbell\GitHub\Facades\GitHubFactory;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,7 +12,7 @@ class HomeController extends Controller
         $repositories = [];
 
         if (auth()->check()) {
-            $connection = GitHub::createConnection(
+            $connection = GitHubFactory::make(
                 [
                     'method' => 'token',
                     'token' => auth()->user()->token,
