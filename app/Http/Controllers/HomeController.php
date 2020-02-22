@@ -19,7 +19,7 @@ class HomeController extends Controller
                 ]
             );
 
-            dd($connection->me()->auth());
+            dd($connection->me()->repositories());
         }
 
         return view('home');
