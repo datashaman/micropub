@@ -15,7 +15,7 @@ class HomeController extends Controller
             $connection = GitHub::createConnection(
                 [
                     'method' => 'token',
-                    'token' => $user->token,
+                    'token' => auth()->user()->token,
                 ]
             );
 
