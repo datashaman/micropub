@@ -7,22 +7,12 @@ use Socialite;
 
 class LoginController extends Controller
 {
-    /**
-     * Redirect the user to the GitHub authentication page.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function redirectToProvider()
+    public function redirect()
     {
         return Socialite::driver('github')->redirect();
     }
 
-    /**
-     * Obtain the user information from GitHub.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function handleProviderCallback()
+    public function callback()
     {
         $user = Socialite::driver('github')->user();
         dd($user);

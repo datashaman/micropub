@@ -31,5 +31,5 @@ Route::post('entry', 'EntryController@store')->name('entry.store');
 
 Route::get('callback', 'AuthController@callback')->name('auth.callback');
 
-Route::get('login/github', 'LoginController@redirectToProvider')->name('login.github');
-Route::get('login/github/callback', 'LoginController@handleProviderCallback');
+Route::get('login/github', 'LoginController@redirect')->name('login.github');
+Route::get('login/github/callback', 'LoginController@callback');
