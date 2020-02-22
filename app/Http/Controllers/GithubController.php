@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\Auth;
 use Socialite;
 
 class GithubController extends Controller
@@ -26,10 +27,12 @@ class GithubController extends Controller
                 'email' => $socialUser->getEMail(),
                 'name' => $socialUser->getName(),
                 'nickname' => $socialUser->getNickname(),
-                'token' => $socialUser->token,
+                'token' => encrypt($socialUser->token),
             ]
         );
 
-        return $user;
+        Auth::login($user, true);
+
+        return redirect()->route('home');
     }
 }
