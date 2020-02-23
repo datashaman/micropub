@@ -19,12 +19,12 @@ use Symfony\Component\Yaml\Yaml;
 
 class MicropubController extends Controller
 {
-    protected function getConnection()
+    protected function getConnection(Request $request)
     {
         return resolve(GitHubFactory::class)->make(
             [
                 'method' => 'token',
-                'token' => decrypt(auth()->user()->token),
+                'token' => decrypt($request->site->user->token),
             ]
         );
     }
@@ -94,7 +94,7 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $response = $this->getConnection()
+        $response = $this->getConnection($request)
             ->repo()
             ->contents()
             ->create(
@@ -214,7 +214,7 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $response = $this->getConnection()
+        $response = $this->getConnection($request)
             ->repo()
             ->contents()
             ->update(
@@ -247,7 +247,7 @@ class MicropubController extends Controller
         $message = 'posted by ' . config('app.name');
         [$source, $sha] = $this->source($request, $url);
 
-        $response = $this->getConnection()
+        $response = $this->getConnection($request)
             ->repo()
             ->contents()
             ->rm(
@@ -282,7 +282,7 @@ class MicropubController extends Controller
     {
         $path = $this->path($request, $url);
 
-        $response = $this->getConnection()
+        $response = $this->getConnection($request)
             ->repo()
             ->contents()
             ->show(
@@ -314,7 +314,7 @@ class MicropubController extends Controller
             ? 'text'
             : 'html';
 
-        $connection = $this->getConnection();
+        $connection = $this->getConnection($request);
 
         $frontMatter = collect()
             ->merge([
