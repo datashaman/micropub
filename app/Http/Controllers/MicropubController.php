@@ -324,7 +324,7 @@ class MicropubController extends Controller
                 }
             )
             ->when(
-                Arr::get($source, 'properties.category'),
+                Arr::get($source, 'category'),
                 function ($coll, $tags) {
                     return $coll->put('tags', $tags);
                 }
@@ -336,7 +336,7 @@ class MicropubController extends Controller
                 }
             )
             ->when(
-                Arr::get($source, 'properties.photo'),
+                Arr::get($source, 'photo'),
                 function ($coll, $photos) use ($connection, $request) {
                     return $coll->put(
                         'photo',
