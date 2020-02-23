@@ -26,6 +26,11 @@
         <ul>
             <li>
                 Endpoint <a href="{{ $site->url }}" target="_blank" rel="noopener noreferrer">{{ $site->url }}</a>
+                <form method="post" action="{{ route('sites.destroy', ['site' => $site]) }}">
+                    @method('DELETE')
+                    @csrf
+                    <input type="submit" value="remove">
+                </form>
             </li>
             <li>
                 Content

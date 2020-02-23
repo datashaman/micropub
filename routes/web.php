@@ -24,12 +24,18 @@ Route::middleware(['auth.micropub'])
     );
 
 Route::middleware(['auth'])
-    ->name('indieauth.')
-    ->prefix('indieauth')
     ->group(
         function () {
-            Route::post('login', 'IndieAuthController@login')->name('login');
-            Route::get('callback', 'IndieAuthController@callback')->name('callback');
+            Route::name('indieauth.')
+                ->prefix('indieauth')
+                ->group(
+                    function () {
+                        Route::post('login', 'IndieAuthController@login')->name('login');
+                        Route::get('callback', 'IndieAuthController@callback')->name('callback');
+                    }
+                );
+
+            Route::resource('sites', 'SiteController');
         }
     );
 
@@ -42,5 +48,3 @@ Route::name('github.')
             Route::get('callback', 'GithubController@callback')->name('callback');
         }
     );
-
-Route::resource('sites', 'SiteController');
