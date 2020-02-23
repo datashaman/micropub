@@ -1,27 +1,23 @@
-<div>
+<p>
     Logged in to <a href="https://indieauth.com" target="_blank" rel="noopener noreferrer">IndieAuth</a>
     as <a href="{{ Session::get('user.me') }}">{{ Session::get('user.me') }}</a>  with scope(s) <em>{{ Session::get('user.scope') }}</em>.
     <a href="{{ route('indieauth.logout') }}">Logout</a>
-</div>
+</p>
 
-<ul>
-    <li>URL: {{ $url }}</li>
-    <li>Owner: {{ $owner }}</li>
-    <li>Repo: {{ $repo }}</li>
-    <li>Branch: {{ $branch }}</li>
-    <li>Link: <a href="https://github.com/{{ $owner }}/{{ $repo }}@if($branch !== 'master')/tree/{{ $branch }}@endif">{{ $owner }}/{{ $repo }}</a></li>
-</ul>
+<p>
+    Content Repository: <a href="https://github.com/{{ $owner }}/{{ $repo }}@if($branch !== 'master')/tree/{{ $branch }}@endif">{{ $owner }}/{{ $repo }}@if($branch !== 'master')#{{ $branch }}@endif</a></li>
+</p>
 
 @auth
-    <div>
+    <p>
         Logged in to <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
         as <a href="https://github.com/{{ auth()->user()->name }}" target="_blank" rel="noopener noreferrer">{{ auth()->user()->name }}</a>.
         <a href="{{ route('github.logout') }}">Logout</a>
-    </div>
+    </p>
 @endauth
 
 @guest
-    <div>
+    <p>
         <a href="{{ route('github.login') }}">Login with GitHub</a>
-    </div>
+    </p>
 @endguest
