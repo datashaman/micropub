@@ -263,7 +263,7 @@ class MicropubController extends Controller
 
     protected function url(Request $request, string $slug): string
     {
-        return rtrim($request->site->url, '/') . '/' . trim($slug, '/');
+        return rtrim($request->site->url, '/') . '/' . trim($slug, '/') . '/';
     }
 
     protected function path(Request $request, string $url): string
