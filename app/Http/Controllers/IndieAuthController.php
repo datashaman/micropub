@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Site;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use IndieAuth\Client;
 
 class IndieAuthController extends Controller
@@ -26,7 +28,11 @@ class IndieAuthController extends Controller
         [$authURL, $error] = Client::begin($request['url'], 'create update');
 
         if ($error) {
-            dd($error);
+            Log::error('error', $error);
+
+            return redirect()
+                ->back()
+                ->withError($error);
         }
 
         return redirect()->to($authURL);
@@ -37,18 +43,69 @@ class IndieAuthController extends Controller
         [$user, $error] = Client::complete($request->all());
 
         if ($error) {
-            dd($error);
+            Log::error('error', $error);
+
+            return redirect()
+                ->back()
+                ->withError($error);
         }
 
-        $request->session()->put('user', $user);
+        $url = $this->getRepository();
+        $parts = parse_url($url);
+
+        if ($parts['host'] !== 'github.com') {
+            throw new Exception('Only GitHub repositories are supported (for now)');
+        }
+
+        $owner = trim(File::dirname($parts['path']), '/');
+        $repo = File::name($parts['path']);
+        $branch = Arr::get($parts, 'fragment', 'master');
+
+        $site = Site::updateOrCreate(
+            [
+                'url' => $user['me'],
+            ],
+            [
+                'owner' => $owner,
+                'repo' => $repo,
+                'branch' => $branch,
+            ]
+        );
+
+        $request->session()->put('site', $site);
 
         return redirect()->route('home');
     }
 
     public function logout(Request $request)
     {
-        $request->session()->forget('user');
+        $request->session()->forget('site');
 
         return redirect()->route('home');
+    }
+
+    protected function getRepository(string $url): string
+    {
+        $client = new Client(
+            [
+                'connect_timeout' => 2.0,
+                'timeout' => 4.0,
+            ]
+        );
+
+        $response = $client->get($me);
+        $crawler = new Crawler((string) $response->getBody());
+
+        $url = $crawler
+            ->filter('head link[rel="content-repository"]')
+            ->attr('href');
+
+        if (!$url) {
+            $url = $crawler
+                ->filter('head link[rel="code-repository"]')
+                ->attr('href');
+        }
+
+        return $url;
     }
 }

@@ -16,7 +16,7 @@ class IndieAuth
      */
     public function handle($request, Closure $next)
     {
-        if (!Session::has('user')) {
+        if (!Session::has('site')) {
             return redirect()->route('indieauth.login');
         }
 

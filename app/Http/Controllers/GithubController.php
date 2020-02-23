@@ -12,7 +12,6 @@ class GithubController extends Controller
     public function login()
     {
         return Socialite::driver('github')
-            ->stateless()
             ->scopes(['repo'])
             ->redirect();
     }
@@ -26,12 +25,7 @@ class GithubController extends Controller
 
     public function callback()
     {
-        $socialUser = Socialite::driver('github')->stateless()->user();
-
-        Log::debug('Social User', [
-            'refreshToken' => $socialUser->refreshToken,
-            'expiresIn' => $socialUser->expiresIn,
-        ]);
+        $socialUser = Socialite::driver('github')->user();
 
         $user = User::updateOrCreate(
             [

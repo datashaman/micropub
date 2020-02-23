@@ -13,38 +13,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $me = session('user.me');
-
-        $client = new Client(
-            [
-                'connect_timeout' => 2.0,
-                'timeout' => 4.0,
-            ]
-        );
-
-        $response = $client->get($me);
-        $crawler = new Crawler((string) $response->getBody());
-
-        $url = $crawler
-            ->filter('head link[rel="content-repository"]')
-            ->attr('href');
-
-        if (!$url) {
-            $url = $crawler
-                ->filter('head link[rel="code-repository"]')
-                ->attr('href');
-        }
-
-        $parts = parse_url($url);
-
-        if ($parts['host'] !== 'github.com') {
-            throw new Exception('Only GitHub repositories are supported (for now)');
-        }
-
-        $owner = trim(File::dirname($parts['path']), '/');
-        $repo = File::name($parts['path']);
-        $branch = Arr::get($parts, 'fragment', 'master');
-
         return view(
             'home',
             [
@@ -55,4 +23,5 @@ class HomeController extends Controller
             ]
         );
     }
+
 }

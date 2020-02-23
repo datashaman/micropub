@@ -26,7 +26,7 @@ class AlterTableUsersLengthenToken extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('token')->change();
+            $table->text('token')->change();
         });
     }
 }
