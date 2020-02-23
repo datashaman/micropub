@@ -93,6 +93,8 @@ class MicropubController extends Controller
             ]
         );
 
+        Log::debug('Connection', compact('connection'));
+
         $response = $connection->repo()->contents()->create(
             $site->owner,
             $site->repo,
@@ -100,6 +102,8 @@ class MicropubController extends Controller
             $content,
             $message
         );
+
+        Log::debug('Response', compact('response'));
 
         $slug = Arr::has($source, 'commands.mp-slug')
             ? Arr::get($source, 'commands.mp-slug')
