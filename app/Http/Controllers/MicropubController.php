@@ -295,15 +295,15 @@ class MicropubController extends Controller
         string $path,
         array $source
     ): string {
-        $contentType = is_string(Arr::get($source, 'properties.content.0'))
+        $contentType = is_string(Arr::get($source, 'content'))
             ? 'text'
             : 'html';
 
-        $published = Arr::has($source, 'properties.published.0')
-            ? Carbon::parse(Arr::get($source, 'properties.published.0'))
+        $published = Arr::has($source, 'published')
+            ? Carbon::parse(Arr::get($source, 'published'))
             : Carbon::now();
 
-        $contentType = is_string(Arr::get($source, 'properties.content.0'))
+        $contentType = is_string(Arr::get($source, 'content'))
             ? 'text'
             : 'html';
 
