@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use GrahamCampbell\GitHub\Facades\GitHub;
+use GrahamCampbell\GitHub\GitHubFactory;
 use GuzzleHttp\Client;
 use Html2Text\Html2Text;
 use Illuminate\Http\JsonResponse;
@@ -73,6 +73,8 @@ class MicropubController extends Controller
     {
         Log::debug('Request', ['input' => $request->all(), 'headers' => $request->headers->all()]);
 
+        $site = session('site');
+
         $source = MicropubRequest::create($request->all())->toMf2();
 
         $now = Carbon::now();
@@ -84,9 +86,16 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $response = GitHub::repo()->contents()->create(
-            config('micropub.github.owner'),
-            config('micropub.github.repo'),
+        $connection = resolve(GitHubFactory::class)->make(
+            [
+                'method' => 'token',
+                'token' => decrypt(auth()->user()->token),
+            ]
+        );
+
+        $response = $connection->repo()->contents()->create(
+            $site->owner,
+            $site->repo,
             $path,
             $content,
             $message
