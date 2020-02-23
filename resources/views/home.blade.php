@@ -22,11 +22,19 @@
         <input type="submit" value="Login">
     </form>
 
-    <ul>
-        @foreach(auth()->user()->sites as $site)
-            <li>{{ $site->url }}</li>
-        @endforeach
-    </ul>
+    @foreach(auth()->user()->sites as $site)
+        <ul>
+            <li>
+                Endpoint <a href="{{ $site->url }}">{{ $site->url }}</a>
+            </li>
+            <li>
+                Content
+                <a href="https://github.com/{{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')/tree/{{ $site->branch }}@endif">
+                    {{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')#{{ $site->branch }}@endif
+                </a>
+            </li>
+        </ul>
+    @endforeach
 @endauth
 
 @guest
