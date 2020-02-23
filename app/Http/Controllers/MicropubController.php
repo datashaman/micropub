@@ -318,9 +318,10 @@ class MicropubController extends Controller
 
         $frontMatter = collect()
             ->merge([
+                'id' => Str::uuid(),
                 'date' => $published,
                 'source' => $source,
-                'type' => 'post',
+                'view' => 'post',
             ])
             ->when(
                 Arr::get($source, 'commands.mp-slug'),
