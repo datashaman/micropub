@@ -90,7 +90,7 @@ class MicropubController extends Controller
         $nowPath = Str::slug($now->toDateTimeString());
         $nowSlug = $now->format('Y/m/d/_His/');
 
-        $path = "docs/_posts/$nowPath.md";
+        $path = "src/posts/$nowPath.md";
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
@@ -325,7 +325,7 @@ class MicropubController extends Controller
             ->when(
                 Arr::get($source, 'commands.mp-slug'),
                 function ($coll, $slug) {
-                    return $coll->put('slug', $slug);
+                    return $coll->put('url', $slug);
                 }
             )
             ->when(
@@ -337,7 +337,7 @@ class MicropubController extends Controller
             ->when(
                 Arr::get($source, 'files'),
                 function ($coll, $files) {
-
+                    // TODO
                 }
             )
             ->when(
@@ -352,7 +352,7 @@ class MicropubController extends Controller
                                         Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
                                         $filename = $photo->hashName();
-                                        $path = 'docs/.vuepress/public/photo/' . $filename;
+                                        $path = 'static/photo/' . $filename;
                                         $slug = 'photo/' . $filename;
                                         $content = $photo->get();
                                         $message = 'posted by ' . config('app.name');
