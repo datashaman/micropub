@@ -12,10 +12,11 @@ class Site extends Model
      * @var array
      */
     protected $fillable = [
-        'url',
+        'branch',
         'owner',
         'repo',
-        'branch',
+        'url',
+        'user_id',
     ];
 
     public function user()
