@@ -83,8 +83,6 @@ class MicropubController extends Controller
     {
         Log::debug('Create', ['all' => $request->all(), 'headers' => $request->headers->all()]);
 
-        $site = resolve('site');
-
         $source = MicropubRequest::create($request->all())->toMf2();
 
         $now = Carbon::now();
@@ -100,8 +98,8 @@ class MicropubController extends Controller
             ->repo()
             ->contents()
             ->create(
-                $site->owner,
-                $site->repo,
+                $request->site->owner,
+                $request->site->repo,
                 $path,
                 $content,
                 $message
@@ -265,7 +263,7 @@ class MicropubController extends Controller
 
     protected function url(Request $request, string $slug): string
     {
-        $url = resolve('site')->url . '/' . $slug;
+        $url = $request->site->url . '/' . $slug;
 
         return preg_replace('#/$#', '', $url);
     }

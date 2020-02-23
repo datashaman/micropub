@@ -51,7 +51,7 @@ class MicropubAuth
             return response()->json(['error' => 'forbidden'], 403);
         }
 
-        app()->instance('site', $site);
+        $request->merge(['site' => $site]);
 
         return $next($request);
     }
