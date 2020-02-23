@@ -17,6 +17,7 @@ class CreateSitesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('url')->unique();
+            $table->string('owner');
             $table->string('repo');
             $table->string('branch');
             $table->timestamps();
