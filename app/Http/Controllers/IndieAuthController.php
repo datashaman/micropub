@@ -6,8 +6,10 @@ use App\Http\Requests\LoginRequest;
 use App\Site;
 use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use IndieAuth\Client;
+use Symfony\Component\DomCrawler\Crawler;
 
 class IndieAuthController extends Controller
 {
