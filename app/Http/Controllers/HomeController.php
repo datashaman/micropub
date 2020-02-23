@@ -42,6 +42,7 @@ class HomeController extends Controller
 
         dd([
             'basename' => File::basename($url['path']),
+            'dirname' => File::dirname($url['path']),
             'extension' => File::extension($url['path']),
             'name' => File::name($url['path']),
         ]);
