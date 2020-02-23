@@ -62,11 +62,13 @@ class IndieAuthController extends Controller
 
         $links = $this->getLinks($user['me']);
 
-        if (Arr::get($links, 'micropub') !== route('micropub.query')) {
+        Log::debug('Links', ['links' => $links->all()]);
+
+        if (!$links->has('micropub') !== route('micropub.query')) {
             throw new Exception('micropub link must be set to ' . route('micropub.query') . ' to use this service');
         }
 
-        $repository = Arr::get($links, 'content-repository', Arr::get($links, 'code-repository'));
+        $repository = $links->get('content-repository', $links->get('code-repository'));
 
         if (!$repository) {
             throw new Exception('content-repository or code-repository link must be set to use this service');
@@ -78,14 +80,13 @@ class IndieAuthController extends Controller
             throw new Exception('content-repository or code-repository link must point to a GitHub repository');
         }
 
-        if (!Arr::get($links, 'token_endpoint')) {
+        if (!$links->has('token_endpoint')) {
             throw new Exception('token_endpoint link must be set to use this service');
         }
 
         $owner = trim(File::dirname($parts['path']), '/');
         $repo = File::name($parts['path']);
         $branch = Arr::get($parts, 'fragment', 'master');
-        $tokenEndpoint = $links['token_endpoint'];
 
         Site::updateOrCreate(
             [
@@ -96,7 +97,7 @@ class IndieAuthController extends Controller
                 'owner' => $owner,
                 'repo' => $repo,
                 'branch' => $branch,
-                'token_endpoint' => $links['token_endpoint'],
+                'token_endpoint' => $links->get('token_endpoint'),
             ]
         );
 
