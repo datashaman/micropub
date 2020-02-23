@@ -24,9 +24,18 @@ class HomeController extends Controller
 
         $response = $client->get($me);
         $crawler = new Crawler((string) $response->getBody());
-        $links = $crawler->filter('head link[rel]')->extract(['rel', 'href']);
 
-        dd($links);
+        $repository = $crawler
+            ->filter('head link[rel="content-repository"]')
+            ->attr('href');
+
+        if (!$repository) {
+            $repository = $crawler
+                ->filter('head link[rel="code-repository"]')
+                ->attr('href');
+        }
+
+        dd($repository);
 
         return view('home');
     }
