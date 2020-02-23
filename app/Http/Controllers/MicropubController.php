@@ -106,7 +106,7 @@ class MicropubController extends Controller
 
         Log::debug('Response', compact('response'));
 
-        $slug = Arr::get($source, 'commands.mp-slug', Arr::get($source, 'mp-slug', $nowSlug));
+        $slug = $request->get('commands.mp-slug', $rquest->get('mp-slug', $nowSlug));
         $location = $this->url($request, $slug);
 
         Log::debug('Slug', compact('slug', 'location'));
@@ -318,7 +318,7 @@ class MicropubController extends Controller
                 'view' => 'post',
             ])
             ->when(
-                Arr::get($source, 'commands.mp-slug', Arr::get($source, 'mp-slug')),
+                $request->get('commands.mp-slug', $rquest->get('mp-slug')),
                 function ($coll, $slug) {
                     return $coll->put('url', $slug);
                 }
