@@ -36,7 +36,7 @@ class HomeController extends Controller
 
         $url = parse_url($repository);
 
-        if ($url['hostname'] !== 'github.com') {
+        if ($url['host'] !== 'github.com') {
             throw new Exception('Only GitHub repositories are supported (for now)');
         }
 
