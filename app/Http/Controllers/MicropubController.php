@@ -88,7 +88,7 @@ class MicropubController extends Controller
         $now = Carbon::now();
 
         $nowPath = Str::slug($now->toDateTimeString());
-        $nowSlug = $now->format('Y/m/d/_His/');
+        $nowSlug = $now->format('Y/m/d/His/');
 
         $path = "src/posts/$nowPath.md";
         $content = $this->content($request, $path, $source);
@@ -271,7 +271,6 @@ class MicropubController extends Controller
         $path = parse_url($url, PHP_URL_PATH);
         $path = trim($path, '/');
         $path = str_replace('/', '-', $path);
-        $path = str_replace('_', '', $path);
 
         return "src/posts/$path.md";
     }
