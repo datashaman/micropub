@@ -96,7 +96,7 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $response = $this->getConnection
+        $response = $this->getConnection()
             ->repo()
             ->contents()
             ->create(
@@ -212,7 +212,7 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $response = $this->getConnection
+        $response = $this->getConnection()
             ->repo()
             ->contents()
             ->update(
