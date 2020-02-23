@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'HomeController@index')->name('home')->middleware('auth.indie');
+Route::get('/', 'HomeController@index')->name('home');
 
 Route::middleware(['auth.micropub'])
     ->prefix('micropub')
@@ -22,11 +22,19 @@ Route::middleware(['auth.micropub'])
         }
     );
 
-Route::get('indieauth/login', 'IndieAuthController@login')->name('indieauth.login');
-Route::post('indieauth/login', 'IndieAuthController@doLogin')->name('indieauth.do-login');
-Route::get('indieauth/logout', 'IndieAuthController@logout')->name('indieauth.logout');
-Route::get('indieauth/callback', 'IndieAuthController@callback')->name('indieauth.callback');
+Route::middleware(['auth'])
+    ->prefix('indieauth')
+    ->group(
+        function () {
+            Route::get('login', 'IndieAuthController@login')->name('login');
+            Route::post('login', 'IndieAuthController@doLogin')->name('do-login');
+            Route::get('logout', 'IndieAuthController@logout')->name('logout');
+            Route::get('callback', 'IndieAuthController@callback')->name('callback');
+        }
+    );
 
 Route::get('github/login', 'GithubController@login')->name('github.login');
 Route::get('github/logout', 'GithubController@logout')->name('github.logout');
 Route::get('github/callback', 'GithubController@callback');
+
+Route::resource('sites', 'SiteController');
