@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use GrahamCampbell\GitHub\GitHubFactory;
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -24,27 +25,34 @@ class HomeController extends Controller
         $response = $client->get($me);
         $crawler = new Crawler((string) $response->getBody());
 
-        $repository = $crawler
+        $url = $crawler
             ->filter('head link[rel="content-repository"]')
             ->attr('href');
 
-        if (!$repository) {
-            $repository = $crawler
+        if (!$url) {
+            $url = $crawler
                 ->filter('head link[rel="code-repository"]')
                 ->attr('href');
         }
 
-        $url = parse_url($repository);
+        $parts = parse_url($url);
 
-        if ($url['host'] !== 'github.com') {
+        if ($parts['host'] !== 'github.com') {
             throw new Exception('Only GitHub repositories are supported (for now)');
         }
 
-        $owner = trim(File::dirname($url['path']), '/');
-        $repo = File::name($url['path']);
+        $owner = trim(File::dirname($parts['path']), '/');
+        $repo = File::name($parts['path']);
+        $branch = Arr::get($parts, 'fragment', 'master');
 
-        dd(compact('owner', 'repo'));
-
-        return view('home');
+        return view(
+            'home',
+            [
+                'url' => $url,
+                'owner' => $owner,
+                'repo' => $repo,
+                'branch' => $branch,
+            ]
+        );
     }
 }

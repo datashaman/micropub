@@ -4,6 +4,13 @@
     <a href="{{ route('indieauth.logout') }}">Logout</a>
 </div>
 
+<ul>
+    <li>URL: {{ $url }}</li>
+    <li>Owner: {{ $owner }}</li>
+    <li>Repo: {{ $repo }}</li>
+    <li>Branch: {{ $branch }}</li>
+</ul>
+
 @auth
     <div>
         Logged in to <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
