@@ -13,6 +13,7 @@
 
     <select>
         @foreach($repositories as $repo)
+            <option value="{{ $repo['id'] }}">{{ $repo['full_name'] }}</option>
         @endforeach
     </select>
 @endauth
