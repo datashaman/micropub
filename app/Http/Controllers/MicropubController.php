@@ -83,7 +83,7 @@ class MicropubController extends Controller
     {
         Log::debug('Create', ['all' => $request->all(), 'headers' => $request->headers->all()]);
 
-        $source = MicropubRequest::create($request->all())->toMf2();
+        $source = MicropubRequest::create($request->except(['site'])())->toMf2();
 
         $now = Carbon::now();
 
