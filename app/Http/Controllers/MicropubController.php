@@ -317,6 +317,7 @@ class MicropubController extends Controller
             ->merge([
                 'id' => Str::uuid()->toString(),
                 'date' => $published,
+                'draft' => true,
                 'source' => $source,
                 'view' => 'post',
             ])
