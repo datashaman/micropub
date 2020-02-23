@@ -81,12 +81,8 @@ class MicropubController extends Controller
 
     protected function create(Request $request): JsonResponse
     {
-        $all = $request->all();
-        $site = $all->pull('site');
-
-        Log::debug('Create', ['all' => $all, 'headers' => $request->headers->all()]);
-
-        $source = MicropubRequest::create($all)->toMf2();
+        Log::debug('Create', ['all' => $request->except(['site']), 'headers' => $request->headers->all()]);
+        $source = MicropubRequest::create($request->except(['site']))->toMf2();
 
         $now = Carbon::now();
 
