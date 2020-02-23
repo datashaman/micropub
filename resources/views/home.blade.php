@@ -9,6 +9,14 @@
         Login to your Micropub endpoints below.
     </p>
 
+    @if(isset($errors) && $errors->count())
+        <div class="errors">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
     <form method="post" action="{{ route('indieauth.do-login') }}">
         <input type="text" name="url" placeholder="https://example.com/">
         <input type="submit" value="Login">
