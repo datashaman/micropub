@@ -273,7 +273,7 @@ class MicropubController extends Controller
         $path = str_replace('/', '-', $path);
         $path = str_replace('_', '', $path);
 
-        return "docs/_posts/$path.md";
+        return "src/posts/$path.md";
     }
 
     protected function source(Request $request, string $url): array
