@@ -64,7 +64,7 @@ class IndieAuthController extends Controller
 
         Log::debug('Links', ['links' => $links->all()]);
 
-        if (!$links->has('micropub') !== route('micropub.query')) {
+        if ($links->get('micropub') !== route('micropub.query')) {
             throw new Exception('micropub link must be set to ' . route('micropub.query') . ' to use this service');
         }
 
