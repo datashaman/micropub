@@ -14,8 +14,6 @@ class HomeController extends Controller
     {
         $me = session('user.me');
 
-        $site = Site::
-
         $client = new Client(
             [
                 'connect_timeout' => 2.0,
