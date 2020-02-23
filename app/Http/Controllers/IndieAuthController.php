@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Site;
 use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use IndieAuth\Client;
