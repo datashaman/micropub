@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Site;
 use Closure;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class MicropubAuth
@@ -41,11 +43,16 @@ class MicropubAuth
 
         Log::debug('IndieAuth user', compact('user'));
 
-        if (!in_array($user['me'], config('indieauth.authorized'))) {
+        $site = Site::query()
+            ->where('url', $user['me'])
+            ->first();
+
+        if (!$site) {
             return response()->json(['error' => 'forbidden'], 403);
         }
 
-        $request->session()->put('user', $user);
+        $request->session()->put('site', $site);
+        Auth::login($site->user);
 
         return $next($request);
     }
