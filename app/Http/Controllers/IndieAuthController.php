@@ -50,7 +50,7 @@ class IndieAuthController extends Controller
                 ->withError($error);
         }
 
-        $url = $this->getRepository();
+        $url = $this->getRepository($user['me']);
         $parts = parse_url($url);
 
         if ($parts['host'] !== 'github.com') {
