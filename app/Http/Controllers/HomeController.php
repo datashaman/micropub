@@ -20,9 +20,14 @@ class HomeController extends Controller
                     'token' => decrypt($user->token),
                 ]
             );
-            dd($connection->me()->repositories());
+            $repositories = $connection->me()->repositories();
         }
 
-        return view('home');
+        return view(
+            'home',
+            [
+                'repositories' => $repositories,
+            ]
+        );
     }
 }
