@@ -251,7 +251,9 @@ class MicropubController extends Controller
 
     protected function url(Request $request, string $slug): string
     {
-        return preg_replace('#/$#', '', $request->session()->get('user.me')) . '/' . $slug;
+        $url = session('site')->url . '/' . $slug;
+
+        return preg_replace('#/$#', '', $url);
     }
 
     protected function path(Request $request, string $url): string
