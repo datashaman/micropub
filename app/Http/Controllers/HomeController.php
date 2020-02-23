@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use GrahamCampbell\GitHub\GitHubFactory;
 use Illuminate\Http\Request;
-use IndieWeb\head_http_rels;
+use function IndieWeb\head_http_rels;
 use Socialite;
 
 class HomeController extends Controller
