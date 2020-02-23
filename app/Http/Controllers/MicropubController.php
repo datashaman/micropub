@@ -320,7 +320,7 @@ class MicropubController extends Controller
             ->when(
                 $request->get('commands.mp-slug', $request->get('mp-slug')),
                 function ($coll, $slug) {
-                    return $coll->put('url', $slug);
+                    return '/' . trim($coll->put('url', $slug), '/') . '/';
                 }
             )
             ->when(
