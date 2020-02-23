@@ -7,6 +7,7 @@ use App\Site;
 use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use IndieAuth\Client;
@@ -14,12 +15,21 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class IndieAuthController extends Controller
 {
+    protected $guzzle;
+
     public function __construct()
     {
         session_start();
 
         Client::$clientID = route('home');
         Client::$redirectURL = route('indieauth.callback');
+
+        $this->guzzle = new GuzzleClient(
+            [
+                'connect_timeout' => 2.0,
+                'timeout' => 4.0,
+            ]
+        );
     }
 
     public function login(LoginRequest $request)
@@ -49,23 +59,32 @@ class IndieAuthController extends Controller
                 ->withError($error);
         }
 
-        $micropub = $this->getMicropub($user['me']);
+        $links = $this->getLinks($user['me']);
 
-        if ($micropub !== route('micropub.query')) {
-            throw new Exception('Micropub endpoint must be set to this service');
+        if (Arr::get($links, 'micropub') !== route('micropub.query')) {
+            throw new Exception('micropub link must be set to ' . route('micropub.query') . ' to use this service');
         }
 
-        $url = $this->getRepository($user['me']);
+        $repository = Arr::get($links, 'content-repository', Arr::get($links, 'code-repository'));
 
-        $parts = parse_url($url);
+        if (!$repository) {
+            throw new Exception('content-repository or code-repository link must be set to use this service');
+        }
+
+        $parts = parse_url($repository);
 
         if ($parts['host'] !== 'github.com') {
-            throw new Exception('Only GitHub content repositories are supported (for now)');
+            throw new Exception('content-repository or code-repository link must point to a GitHub repository');
+        }
+
+        if (!Arr::get($links, 'token_endpoint')) {
+            throw new Exception('token_endpoint link must be set to use this service');
         }
 
         $owner = trim(File::dirname($parts['path']), '/');
         $repo = File::name($parts['path']);
         $branch = Arr::get($parts, 'fragment', 'master');
+        $tokenEndpoint = $links['token_endpoint'];
 
         Site::updateOrCreate(
             [
@@ -76,53 +95,36 @@ class IndieAuthController extends Controller
                 'owner' => $owner,
                 'repo' => $repo,
                 'branch' => $branch,
+                'token_endpoint' => $links['token_endpoint'],
             ]
         );
 
         return redirect()->route('home');
     }
 
-    protected function getMicropub(string $me): string
+    protected function getLinks(string $me): Collection
     {
-        $client = new GuzzleClient(
-            [
-                'connect_timeout' => 2.0,
-                'timeout' => 4.0,
-            ]
-        );
-
-        $response = $client->get($me);
+        $response = $this->guzzle->get($me);
         $crawler = new Crawler((string) $response->getBody());
 
-        $url = $crawler
-            ->filter('head link[rel="micropub"]')
-            ->attr('href');
+        $links = $crawler
+            ->filter('head link[rel]')
+            ->map(
+                function ($link) {
+                    return [
+                        'rel' => $link->attr('rel'),
+                        'href' => $link->attr('href'),
+                    ];
+                }
+            );
 
-        return $url;
-    }
-
-    protected function getRepository(string $me): string
-    {
-        $client = new GuzzleClient(
-            [
-                'connect_timeout' => 2.0,
-                'timeout' => 4.0,
-            ]
-        );
-
-        $response = $client->get($me);
-        $crawler = new Crawler((string) $response->getBody());
-
-        $url = $crawler
-            ->filter('head link[rel="content-repository"]')
-            ->attr('href');
-
-        if (!$url) {
-            $url = $crawler
-                ->filter('head link[rel="code-repository"]')
-                ->attr('href');
-        }
-
-        return $url;
+        return collect($links)
+            ->mapWithKeys(
+                function ($link) {
+                    return [
+                        $link->rel => $link->href,
+                    ];
+                }
+            );
     }
 }

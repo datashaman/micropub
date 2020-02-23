@@ -15,6 +15,7 @@ class Site extends Model
         'branch',
         'owner',
         'repo',
+        'token_endpoint',
         'url',
         'user_id',
     ];
