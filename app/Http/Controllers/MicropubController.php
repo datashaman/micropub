@@ -19,6 +19,16 @@ use Symfony\Component\Yaml\Yaml;
 
 class MicropubController extends Controller
 {
+    protected function getConnection()
+    {
+        return resolve(GitHubFactory::class)->make(
+            [
+                'method' => 'token',
+                'token' => decrypt(auth()->user()->token),
+            ]
+        );
+    }
+
     public function query(Request $request): JsonResponse
     {
         $q = $request->get('q');
@@ -86,22 +96,16 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $connection = resolve(GitHubFactory::class)->make(
-            [
-                'method' => 'token',
-                'token' => decrypt(auth()->user()->token),
-            ]
-        );
-
-        Log::debug('Connection', compact('connection'));
-
-        $response = $connection->repo()->contents()->create(
-            $site->owner,
-            $site->repo,
-            $path,
-            $content,
-            $message
-        );
+        $response = $this->getConnection
+            ->repo()
+            ->contents()
+            ->create(
+                $site->owner,
+                $site->repo,
+                $path,
+                $content,
+                $message
+            );
 
         Log::debug('Response', compact('response'));
 
@@ -208,14 +212,17 @@ class MicropubController extends Controller
         $content = $this->content($request, $path, $source);
         $message = 'posted by ' . config('app.name');
 
-        $response = GitHub::repo()->contents()->update(
-            config('micropub.github.owner'),
-            config('micropub.github.repo'),
-            $path,
-            $content,
-            $message,
-            $sha
-        );
+        $response = $this->getConnection
+            ->repo()
+            ->contents()
+            ->update(
+                config('micropub.github.owner'),
+                config('micropub.github.repo'),
+                $path,
+                $content,
+                $message,
+                $sha
+            );
 
         Log::debug('GitHub update', compact('path', 'content', 'response'));
 
@@ -238,13 +245,16 @@ class MicropubController extends Controller
         $message = 'posted by ' . config('app.name');
         [$source, $sha] = $this->source($request, $url);
 
-        $response = GitHub::repo()->contents()->rm(
-            config('micropub.github.owner'),
-            config('micropub.github.repo'),
-            $path,
-            $message,
-            $sha
-        );
+        $response = $this->getConnection()
+            ->repo()
+            ->contents()
+            ->rm(
+                config('micropub.github.owner'),
+                config('micropub.github.repo'),
+                $path,
+                $message,
+                $sha
+            );
 
         return response()->json(null, 204);
     }
@@ -270,11 +280,14 @@ class MicropubController extends Controller
     {
         $path = $this->path($request, $url);
 
-        $response = GitHub::repo()->contents()->show(
-            config('micropub.github.owner'),
-            config('micropub.github.repo'),
-            $path
-        );
+        $response = $this->getConnection()
+            ->repo()
+            ->contents()
+            ->show(
+                config('micropub.github.owner'),
+                config('micropub.github.repo'),
+                $path
+            );
 
         $content = base64_decode($response['content']);
         $object = YamlFrontMatter::parse($content);
@@ -298,6 +311,8 @@ class MicropubController extends Controller
         $contentType = is_string(Arr::get($source, 'properties.content.0'))
             ? 'text'
             : 'html';
+
+        $connection = $this->getConnection();
 
         $frontMatter = collect()
             ->merge([
@@ -325,12 +340,12 @@ class MicropubController extends Controller
             )
             ->when(
                 Arr::get($source, 'properties.photo'),
-                function ($coll, $photos) use ($request) {
+                function ($coll, $photos) use ($connection, $request) {
                     return $coll->put(
                         'photo',
                         collect($photos)
                             ->map(
-                                function ($photo) use ($request) {
+                                function ($photo) use ($connection, $request) {
                                     if ($photo instanceof UploadedFile) {
                                         Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
 
@@ -342,13 +357,16 @@ class MicropubController extends Controller
 
                                         Log::debug('Path', compact('path'));
 
-                                        $response = GitHub::repo()->contents()->create(
-                                            config('micropub.github.owner'),
-                                            config('micropub.github.repo'),
-                                            $path,
-                                            $content,
-                                            $message
-                                        );
+                                        $response = $this->connection()
+                                            ->repo()
+                                            ->contents()
+                                            ->create(
+                                                config('micropub.github.owner'),
+                                                config('micropub.github.repo'),
+                                                $path,
+                                                $content,
+                                                $message
+                                            );
 
                                         Log::debug('GitHub response', compact('response'));
 
