@@ -24,7 +24,7 @@ class HomeController extends Controller
 
         $response = $client->get($me);
         $crawler = new Crawler((string) $response->getBody());
-        $links = $crawler->filter('head link[rel]');
+        $links = $crawler->filter('head link[rel]')->extract(['rel', 'href']);
 
         dd($links);
 
