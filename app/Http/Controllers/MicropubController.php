@@ -326,6 +326,7 @@ class MicropubController extends Controller
             ->when(
                 Arr::get($source, 'category'),
                 function ($coll, $tags) {
+                    $tags = (array) $tags;
                     return $coll->put('tags', $tags);
                 }
             )
