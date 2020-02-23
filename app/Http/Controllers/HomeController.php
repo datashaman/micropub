@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use DOMDocument;
 use GrahamCampbell\GitHub\GitHubFactory;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Socialite;
+use Symfony\Component\DomCrawler\Crawler;
 
 class HomeController extends Controller
 {
@@ -13,15 +15,18 @@ class HomeController extends Controller
     {
         $me = session('user.me');
 
-        $client = new Client();
-        $response = $client->get($me);
-
-        dd(
+        $client = new Client(
             [
-                'headers' => $response->getHeaders(),
-                'body' => $response->getBody(),
+                'connect_timeout' => 2.0,
+                'timeout' => 4.0,
             ]
         );
+
+        $response = $client->get($me);
+        $crawler = new Crawler((string) $response->getBody());
+        $links = $crawler->filter('head link[rel]');
+
+        dd($links);
 
         return view('home');
     }

@@ -18,9 +18,12 @@
         "laravel/framework": "^6.2",
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
+        "masterminds/html5": "^2.7",
         "p3k/micropub": "^0.0.3",
         "php-http/guzzle6-adapter": "^2.0",
         "spatie/yaml-front-matter": "^2.0",
+        "symfony/css-selector": "^5.0",
+        "symfony/dom-crawler": "^5.0",
         "symfony/yaml": "^5.0"
     },
     "require-dev": {
