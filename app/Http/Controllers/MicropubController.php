@@ -106,7 +106,7 @@ class MicropubController extends Controller
 
         Log::debug('Response', compact('response'));
 
-        $slug = $request->get('commands.mp-slug', $rquest->get('mp-slug', $nowSlug));
+        $slug = $request->get('commands.mp-slug', $request->get('mp-slug', $nowSlug));
         $location = $this->url($request, $slug);
 
         Log::debug('Slug', compact('slug', 'location'));
