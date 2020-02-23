@@ -25,7 +25,7 @@ class GithubController extends Controller
 
     public function callback()
     {
-        $socialUser = Socialite::driver('github')->user();
+        $socialUser = Socialite::driver('github')->stateless()->user();
 
         Log::debug('Social User', [
             'refreshToken' => $socialUser->refreshToken,
