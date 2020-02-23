@@ -22,12 +22,7 @@ class IndieAuthController extends Controller
         Client::$redirectURL = route('indieauth.callback');
     }
 
-    public function login()
-    {
-        return view('login');
-    }
-
-    public function doLogin(LoginRequest $request)
+    public function login(LoginRequest $request)
     {
         [$authURL, $error] = Client::begin($request['url'], 'create update');
 
@@ -65,8 +60,9 @@ class IndieAuthController extends Controller
         $repo = File::name($parts['path']);
         $branch = Arr::get($parts, 'fragment', 'master');
 
-        $site = Site::updateOrCreate(
+        Site::updateOrCreate(
             [
+                'user_id' => auth()->user()->id,
                 'url' => $user['me'],
             ],
             [
@@ -75,15 +71,6 @@ class IndieAuthController extends Controller
                 'branch' => $branch,
             ]
         );
-
-        $request->session()->put('site', $site);
-
-        return redirect()->route('home');
-    }
-
-    public function logout(Request $request)
-    {
-        $request->session()->forget('site');
 
         return redirect()->route('home');
     }

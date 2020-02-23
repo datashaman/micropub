@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <form method="post" action="{{ route('indieauth.do-login') }}">
+    <form method="post" action="{{ route('indieauth.login') }}">
         <input type="text" name="url" placeholder="https://example.com/">
         <input type="submit" value="Login">
     </form>

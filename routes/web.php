@@ -27,15 +27,19 @@ Route::middleware(['auth'])
     ->prefix('indieauth')
     ->group(
         function () {
-            Route::get('login', 'IndieAuthController@login')->name('login');
-            Route::post('login', 'IndieAuthController@doLogin')->name('do-login');
-            Route::get('logout', 'IndieAuthController@logout')->name('logout');
+            Route::post('login', 'IndieAuthController@login')->name('login');
             Route::get('callback', 'IndieAuthController@callback')->name('callback');
         }
     );
 
-Route::get('github/login', 'GithubController@login')->name('github.login');
-Route::get('github/logout', 'GithubController@logout')->name('github.logout');
-Route::get('github/callback', 'GithubController@callback');
+Route::name('github.')
+    ->prefix('github')
+    ->group(
+        function () {
+            Route::get('login', 'GithubController@login')->name('login');
+            Route::get('logout', 'GithubController@logout')->name('logout');
+            Route::get('callback', 'GithubController@callback')->name('callback');
+        }
+    );
 
 Route::resource('sites', 'SiteController');
