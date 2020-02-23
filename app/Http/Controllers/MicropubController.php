@@ -382,7 +382,7 @@ class MicropubController extends Controller
             )
             ->all();
 
-        $view = 'types.' . Arr::get($source, 'type.0');
+        $view = 'types.' . Arr::get($source, 'h', 'entry');
 
         return view(
             $view,
