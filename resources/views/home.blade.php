@@ -1,11 +1,14 @@
 <p>
     Logged in to <a href="https://indieauth.com" target="_blank" rel="noopener noreferrer">IndieAuth</a>
-    as <a href="{{ Session::get('user.me') }}">{{ Session::get('user.me') }}</a>  with scope(s) <em>{{ Session::get('user.scope') }}</em>.
+    as <a href="{{ $site->url }}">{{ $site->url }}</a>.
     <a href="{{ route('indieauth.logout') }}">Logout</a>
 </p>
 
 <p>
-    Content Repository: <a href="https://github.com/{{ $owner }}/{{ $repo }}@if($branch !== 'master')/tree/{{ $branch }}@endif">{{ $owner }}/{{ $repo }}@if($branch !== 'master')#{{ $branch }}@endif</a></li>
+    Content Repository:
+    <a href="https://github.com/{{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')/tree/{{ $site->branch }}@endif">
+    {{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')#{{ $site->branch }}@endif
+    </a>
 </p>
 
 @auth

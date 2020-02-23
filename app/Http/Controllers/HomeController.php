@@ -14,12 +14,8 @@ class HomeController extends Controller
         return view(
             'home',
             [
-                'url' => $url,
-                'owner' => $owner,
-                'repo' => $repo,
-                'branch' => $branch,
+                'site' => session('site'),
             ]
         );
     }
-
 }
