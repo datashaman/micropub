@@ -81,9 +81,9 @@ class MicropubController extends Controller
 
     protected function create(Request $request): JsonResponse
     {
-        Log::debug('Request', ['input' => $request->all(), 'headers' => $request->headers->all()]);
+        Log::debug('Create', ['all' => $request->all(), 'headers' => $request->headers->all()]);
 
-        $site = session('site');
+        $site = resolve('site');
 
         $source = MicropubRequest::create($request->all())->toMf2();
 
@@ -265,7 +265,7 @@ class MicropubController extends Controller
 
     protected function url(Request $request, string $slug): string
     {
-        $url = session('site')->url . '/' . $slug;
+        $url = resolve('site')->url . '/' . $slug;
 
         return preg_replace('#/$#', '', $url);
     }

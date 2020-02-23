@@ -51,8 +51,7 @@ class MicropubAuth
             return response()->json(['error' => 'forbidden'], 403);
         }
 
-        $request->session()->put('site', $site);
-        Auth::login($site->user);
+        app()->instance('site', $site);
 
         return $next($request);
     }
