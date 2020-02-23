@@ -218,8 +218,8 @@ class MicropubController extends Controller
             ->repo()
             ->contents()
             ->update(
-                config('micropub.github.owner'),
-                config('micropub.github.repo'),
+                $request->site->owner,
+                $request->site->repo,
                 $path,
                 $content,
                 $message,
@@ -251,8 +251,8 @@ class MicropubController extends Controller
             ->repo()
             ->contents()
             ->rm(
-                config('micropub.github.owner'),
-                config('micropub.github.repo'),
+                $request->site->owner,
+                $request->site->repo,
                 $path,
                 $message,
                 $sha
@@ -286,8 +286,8 @@ class MicropubController extends Controller
             ->repo()
             ->contents()
             ->show(
-                config('micropub.github.owner'),
-                config('micropub.github.repo'),
+                $request->site->owner,
+                $request->site->repo,
                 $path
             );
 
@@ -363,8 +363,8 @@ class MicropubController extends Controller
                                             ->repo()
                                             ->contents()
                                             ->create(
-                                                config('micropub.github.owner'),
-                                                config('micropub.github.repo'),
+                                                $request->site->owner,
+                                                $request->site->repo,
                                                 $path,
                                                 $content,
                                                 $message
