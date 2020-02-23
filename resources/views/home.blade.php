@@ -9,6 +9,7 @@
     <li>Owner: {{ $owner }}</li>
     <li>Repo: {{ $repo }}</li>
     <li>Branch: {{ $branch }}</li>
+    <li>Link: <a href="https://github.com/{{ $owner }}/{{ $repo }}@if($branch !== 'master')/tree/{{ $branch }}@endif">{{ $owner }}/{{ $repo }}</a></li>
 </ul>
 
 @auth
