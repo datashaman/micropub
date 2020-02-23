@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use DOMDocument;
+use Exception;
 use GrahamCampbell\GitHub\GitHubFactory;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use Socialite;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\DomCrawler\Crawler;
 
 class HomeController extends Controller
@@ -14,6 +13,8 @@ class HomeController extends Controller
     public function index()
     {
         $me = session('user.me');
+
+        $site = Site::
 
         $client = new Client(
             [
@@ -35,7 +36,17 @@ class HomeController extends Controller
                 ->attr('href');
         }
 
-        dd($repository);
+        $url = parse_url($repository);
+
+        if ($url['hostname'] !== 'github.com') {
+            throw new Exception('Only GitHub repositories are supported (for now)');
+        }
+
+        dd([
+            'basename' => File::basename($url['path']),
+            'filename' => File::filename($url['path']),
+            'extension' => File::extension($url['path']),
+        ]);
 
         return view('home');
     }
