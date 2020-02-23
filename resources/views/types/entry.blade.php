@@ -2,7 +2,7 @@
 {!! $frontMatter !!}
 ---
 @if($contentType === 'html')
-{!! Arr::get($post, 'properties.content.0.html') !!}
+{!! Arr::get($post, 'content.html') !!}
 @elseif($contentType === 'text')
-{{ Arr::get($post, 'properties.content.0') }}
+{{ Arr::get($post, 'content') }}
 @endif
