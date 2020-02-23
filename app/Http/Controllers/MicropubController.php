@@ -263,9 +263,7 @@ class MicropubController extends Controller
 
     protected function url(Request $request, string $slug): string
     {
-        $url = $request->site->url . '/' . $slug;
-
-        return preg_replace('#/$#', '', $url);
+        return rtrim($request->site->url, '/') . '/' . trim($slug, '/');
     }
 
     protected function path(Request $request, string $url): string
