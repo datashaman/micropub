@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Socialite;
 
 class GithubController extends Controller
@@ -25,6 +26,11 @@ class GithubController extends Controller
     public function callback()
     {
         $socialUser = Socialite::driver('github')->user();
+
+        Log::debug('Social User', [
+            'refreshToken' => $socialUser->refreshToken,
+            'expiresIn' => $socialUser->expiresIn,
+        ]);
 
         $user = User::updateOrCreate(
             [
