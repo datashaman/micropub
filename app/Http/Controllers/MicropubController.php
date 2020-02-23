@@ -318,7 +318,7 @@ class MicropubController extends Controller
                 'view' => 'post',
             ])
             ->when(
-                $request->get('commands.mp-slug', $rquest->get('mp-slug')),
+                $request->get('commands.mp-slug', $request->get('mp-slug')),
                 function ($coll, $slug) {
                     return $coll->put('url', $slug);
                 }
