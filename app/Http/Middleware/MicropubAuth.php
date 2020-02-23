@@ -18,6 +18,8 @@ class MicropubAuth
      */
     public function handle($request, Closure $next)
     {
+        Log::debug('Request', ['all' => $request->all()]);
+
         $accessToken = $request->get('access_token') ?: $request->bearerToken();
         Log::debug('Access token', compact('accessToken'));
 
