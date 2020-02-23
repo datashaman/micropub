@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Site;
+use GuzzleHttp\Client as GuzzleClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use IndieAuth\Client;
@@ -86,7 +87,7 @@ class IndieAuthController extends Controller
 
     protected function getRepository(string $url): string
     {
-        $client = new Client(
+        $client = new GuzzleClient(
             [
                 'connect_timeout' => 2.0,
                 'timeout' => 4.0,
