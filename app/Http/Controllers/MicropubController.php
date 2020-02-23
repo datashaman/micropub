@@ -310,17 +310,25 @@ class MicropubController extends Controller
         $connection = $this->getConnection($request);
 
         $frontMatter = collect()
-            ->merge([
-                'id' => Str::orderedUuid()->toString(),
-                'date' => $published,
-                'draft' => true,
-                'source' => $source,
-                'view' => 'post',
-            ])
+            ->merge(
+                [
+                    'id' => Str::orderedUuid()->toString(),
+                    'date' => $published,
+                    'draft' => true,
+                    'source' => $source,
+                    'view' => 'post',
+                ]
+            )
             ->when(
                 $request->get('commands.mp-slug', $request->get('mp-slug')),
                 function ($coll, $slug) {
                     return $coll->put('url', '/' . trim($slug, '/') . '/');
+                }
+            )
+            ->when(
+                Arr::get($source, 'name'),
+                function ($coll, $name) {
+                    return $coll->put('title', $name);
                 }
             )
             ->when(
