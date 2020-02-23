@@ -25,11 +25,11 @@
     @foreach(auth()->user()->sites as $site)
         <ul>
             <li>
-                Endpoint <a href="{{ $site->url }}">{{ $site->url }}</a>
+                Endpoint <a href="{{ $site->url }}" target="_blank" rel="noopener noreferrer">{{ $site->url }}</a>
             </li>
             <li>
                 Content
-                <a href="https://github.com/{{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')/tree/{{ $site->branch }}@endif">
+                <a href="https://github.com/{{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')/tree/{{ $site->branch }}@endif" target="_blank" rel="noopener noreferrer">
                     {{ $site->owner }}/{{ $site->repo }}@if($site->branch !== 'master')#{{ $site->branch }}@endif
                 </a>
             </li>
