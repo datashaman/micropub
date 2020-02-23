@@ -49,11 +49,18 @@ class IndieAuthController extends Controller
                 ->withError($error);
         }
 
+        $micropub = $this->getMicropub($user['me']);
+
+        if ($micropub !== route('micropub.query')) {
+            throw new Exception('Micropub endpoint must be set to this service');
+        }
+
         $url = $this->getRepository($user['me']);
+
         $parts = parse_url($url);
 
         if ($parts['host'] !== 'github.com') {
-            throw new Exception('Only GitHub repositories are supported (for now)');
+            throw new Exception('Only GitHub content repositories are supported (for now)');
         }
 
         $owner = trim(File::dirname($parts['path']), '/');
@@ -73,6 +80,25 @@ class IndieAuthController extends Controller
         );
 
         return redirect()->route('home');
+    }
+
+    protected function getMicropub(string $me): string
+    {
+        $client = new GuzzleClient(
+            [
+                'connect_timeout' => 2.0,
+                'timeout' => 4.0,
+            ]
+        );
+
+        $response = $client->get($me);
+        $crawler = new Crawler((string) $response->getBody());
+
+        $url = $crawler
+            ->filter('head link[rel="micropub"]')
+            ->attr('href');
+
+        return $url;
     }
 
     protected function getRepository(string $me): string

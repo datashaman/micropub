@@ -14,11 +14,12 @@
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::middleware(['auth.micropub'])
+    ->name('micropub.')
     ->prefix('micropub')
     ->group(
         function () {
-            Route::get('/', 'MicropubController@query');
-            Route::post('/', 'MicropubController@post');
+            Route::get('/', 'MicropubController@query')->name('query');
+            Route::post('/', 'MicropubController@post')->name('post');
         }
     );
 
