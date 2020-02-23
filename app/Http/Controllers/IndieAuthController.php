@@ -80,8 +80,8 @@ class IndieAuthController extends Controller
             throw new Exception('content-repository or code-repository link must point to a GitHub repository');
         }
 
-        if (!$links->has('token_endpoint')) {
-            throw new Exception('token_endpoint link must be set to use this service');
+        if ($links->get('token_endpoint') != config('indieauth.tokenEndpoint')) {
+            throw new Exception('token_endpoint link must be set to ' . config('indieauth.tokenEndpoint') . ' to use this service');
         }
 
         $owner = trim(File::dirname($parts['path']), '/');
