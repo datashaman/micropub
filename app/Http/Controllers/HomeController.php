@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use GrahamCampbell\GitHub\GitHubFactory;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use function IndieWeb\head_http_rels;
 use Socialite;
 
 class HomeController extends Controller
@@ -12,11 +12,16 @@ class HomeController extends Controller
     public function index()
     {
         $me = session('user.me');
-        $rels = head_http_rels($me);
-        dd($rels);
 
-        if (auth()->check()) {
-        }
+        $client = new Client();
+        $response = $client->get($me);
+
+        dd(
+            [
+                'headers' => $response->getHeaders(),
+                'body' => $response->getBody(),
+            ]
+        );
 
         return view('home');
     }
