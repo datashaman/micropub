@@ -113,11 +113,15 @@ class MicropubController extends Controller
             ? Arr::get($source, 'commands.mp-slug')
             : $nowSlug;
 
+        $location = $this->url($request, $slug);
+
+        Log::debug('Slug', compact('slug', 'location'));
+
         return response()->json(
             null,
             201,
             [
-                'Location' => $this->url($request, $slug),
+                'Location' => $location,
             ]
         );
     }
