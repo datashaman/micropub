@@ -106,10 +106,7 @@ class MicropubController extends Controller
 
         Log::debug('Response', compact('response'));
 
-        $slug = Arr::has($source, 'commands.mp-slug')
-            ? Arr::get($source, 'commands.mp-slug')
-            : $nowSlug;
-
+        $slug = Arr::get($source, 'commands.mp-slug', Arr::get($source, 'mp-slug', $nowSlug));
         $location = $this->url($request, $slug);
 
         Log::debug('Slug', compact('slug', 'location'));
@@ -314,7 +311,7 @@ class MicropubController extends Controller
 
         $frontMatter = collect()
             ->merge([
-                'id' => Str::uuid()->toString(),
+                'id' => Str::orderedUuid()->toString(),
                 'date' => $published,
                 'draft' => true,
                 'source' => $source,
