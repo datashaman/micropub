@@ -40,12 +40,10 @@ class HomeController extends Controller
             throw new Exception('Only GitHub repositories are supported (for now)');
         }
 
-        dd([
-            'basename' => File::basename($url['path']),
-            'dirname' => File::dirname($url['path']),
-            'extension' => File::extension($url['path']),
-            'name' => File::name($url['path']),
-        ]);
+        $owner = trim(File::dirname($url['path']), '/');
+        $repo = File::name($url['path']);
+
+        dd(compact('owner', 'repo'));
 
         return view('home');
     }
