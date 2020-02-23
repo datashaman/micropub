@@ -85,7 +85,7 @@ class IndieAuthController extends Controller
         return redirect()->route('home');
     }
 
-    protected function getRepository(string $url): string
+    protected function getRepository(string $me): string
     {
         $client = new GuzzleClient(
             [
