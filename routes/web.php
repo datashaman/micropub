@@ -23,6 +23,7 @@ Route::middleware(['auth.micropub'])
     );
 
 Route::middleware(['auth'])
+    ->name('indieauth.')
     ->prefix('indieauth')
     ->group(
         function () {
