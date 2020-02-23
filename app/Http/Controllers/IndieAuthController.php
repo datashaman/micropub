@@ -109,20 +109,15 @@ class IndieAuthController extends Controller
 
         $links = $crawler
             ->filter('head link[rel]')
-            ->map(
-                function ($link) {
-                    return [
-                        'rel' => $link->attr('rel'),
-                        'href' => $link->attr('href'),
-                    ];
-                }
-            );
+            ->extract(['rel', 'href']);
 
         return collect($links)
             ->mapWithKeys(
                 function ($link) {
+
                     return [
-                        $link->rel => $link->href,
+                        'rel' => $link[0],
+                        'href' => $link[1],
                     ];
                 }
             );
