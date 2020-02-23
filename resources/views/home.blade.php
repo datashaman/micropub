@@ -10,7 +10,7 @@
     </p>
 
     <form method="post" action="{{ route('indieauth.do-login') }}">
-        <input type="text" placeholder="https://example.com/">
+        <input type="text" name="url" placeholder="https://example.com/">
         <input type="submit" value="Login">
     </form>
 
