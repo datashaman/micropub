@@ -316,7 +316,7 @@ class MicropubController extends Controller
 
         $frontMatter = collect()
             ->merge([
-                'id' => Str::uuid(),
+                'id' => Str::uuid()->toString(),
                 'date' => $published,
                 'source' => $source,
                 'view' => 'post',
