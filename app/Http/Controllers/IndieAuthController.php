@@ -116,10 +116,8 @@ class IndieAuthController extends Controller
         return collect($links)
             ->mapWithKeys(
                 function ($link) {
-
                     return [
-                        'rel' => $link[0],
-                        'href' => $link[1],
+                        $link[0] => $link[1],
                     ];
                 }
             );
