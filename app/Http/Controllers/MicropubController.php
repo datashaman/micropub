@@ -82,7 +82,8 @@ class MicropubController extends Controller
     protected function create(Request $request): JsonResponse
     {
         $source = $request->except(['site']);
-        Log::debug('Create', ['all' => $request->except(['site']), 'source' => $source]);
+        $micropubRequest = MicropubRequest::create($source);
+        Log::debug('Create', ['source' => $source, 'micropubRequest' => $micropubRequest]);
 
         $now = Carbon::now();
 
@@ -295,10 +296,6 @@ class MicropubController extends Controller
         string $path,
         array $source
     ): string {
-        $contentType = is_string(Arr::get($source, 'content'))
-            ? 'text'
-            : 'html';
-
         $published = Arr::has($source, 'published')
             ? Carbon::parse(Arr::get($source, 'published'))
             : Carbon::now();
@@ -309,7 +306,7 @@ class MicropubController extends Controller
 
         $connection = $this->getConnection($request);
 
-        $frontMatter = collect()
+        $data = collect()
             ->merge(
                 [
                     'id' => Str::orderedUuid()->toString(),
@@ -394,9 +391,8 @@ class MicropubController extends Controller
             $view,
             [
                 'contentType' => $contentType,
-                'frontMatter' => trim(Yaml::dump($frontMatter, 10)),
-                'post' => $source,
-                'published' => $published->toIso8601String(),
+                'frontMatter' => trim(Yaml::dump($data, 10)),
+                'source' => $source,
             ]
         )->render();
     }
