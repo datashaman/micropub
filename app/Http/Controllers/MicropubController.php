@@ -86,6 +86,7 @@ class MicropubController extends Controller
         Log::debug(
             'Create', [
                 'source' => $source,
+                'type' => $micropubRequest->type,
                 'action' => $micropubRequest->action,
                 'properties' => $micropubRequest->properties,
                 'update' => $micropubRequest->update,
