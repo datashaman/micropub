@@ -83,7 +83,15 @@ class MicropubController extends Controller
     {
         $source = $request->except(['site']);
         $micropubRequest = MicropubRequest::create($source);
-        Log::debug('Create', ['source' => $source, 'micropubRequest' => $micropubRequest]);
+        Log::debug(
+            'Create', [
+                'source' => $source,
+                'action' => $micropubRequest->action,
+                'properties' => $micropubRequest->properties,
+                'update' => $micropubRequest->update,
+                'url' => $micropubRequest->url,
+            ]
+        );
 
         $now = Carbon::now();
 
