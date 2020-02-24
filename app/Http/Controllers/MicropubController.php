@@ -82,15 +82,16 @@ class MicropubController extends Controller
     protected function create(Request $request): JsonResponse
     {
         $source = $request->except(['site']);
-        $micropubRequest = MicropubRequest::create($source);
+        $mpRequest = MicropubRequest::create($source);
+
         Log::debug(
             'Create', [
                 'source' => $source,
-                'type' => $micropubRequest->type,
-                'action' => $micropubRequest->action,
-                'properties' => $micropubRequest->properties,
-                'update' => $micropubRequest->update,
-                'url' => $micropubRequest->url,
+                'action' => $mpRequest->action,
+                'commands' => $mpRequest->commands,
+                'properties' => $mpRequest->properties,
+                'update' => $mpRequest->update,
+                'url' => $mpRequest->url,
             ]
         );
 
