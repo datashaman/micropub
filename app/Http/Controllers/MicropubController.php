@@ -81,12 +81,11 @@ class MicropubController extends Controller
 
     protected function create(Request $request): JsonResponse
     {
-        $source = $request->except(['site']);
-        $mpRequest = MicropubRequest::create($source);
+        $mpRequest = MicropubRequest::create($request->except(['site']));
+        $source = $mpRequest->toMf2();
 
         Log::debug(
             'Create', [
-                'source' => $source,
                 'action' => $mpRequest->action,
                 'commands' => $mpRequest->commands,
                 'properties' => $mpRequest->properties,
@@ -321,7 +320,7 @@ class MicropubController extends Controller
                 [
                     'id' => Str::orderedUuid()->toString(),
                     'date' => $published,
-                    'draft' => true,
+                    // 'draft' => true,
                     'source' => $source,
                     'view' => 'post',
                 ]
