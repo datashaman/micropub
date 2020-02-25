@@ -111,7 +111,8 @@ class MicropubController extends Controller
                 $request->site->repo,
                 $path,
                 $content,
-                $message
+                $message,
+                $request->site->branch
             );
 
         Log::debug('Response', compact('response'));
@@ -229,7 +230,8 @@ class MicropubController extends Controller
                 $path,
                 $content,
                 $message,
-                $sha
+                $sha,
+                $request->site->branch
             );
 
         Log::debug('GitHub update', compact('path', 'content', 'response'));
@@ -261,7 +263,8 @@ class MicropubController extends Controller
                 $request->site->repo,
                 $path,
                 $message,
-                $sha
+                $sha,
+                $request->site->branch
             );
 
         return response()->json(null, 204);
@@ -291,7 +294,8 @@ class MicropubController extends Controller
             ->show(
                 $request->site->owner,
                 $request->site->repo,
-                $path
+                $path,
+                $request->site->branch
             );
 
         $content = base64_decode($response['content']);
@@ -377,7 +381,8 @@ class MicropubController extends Controller
                                                 $request->site->repo,
                                                 $path,
                                                 $content,
-                                                $message
+                                                $message,
+                                                $request->site->branch
                                             );
 
                                         Log::debug('GitHub response', compact('response'));
