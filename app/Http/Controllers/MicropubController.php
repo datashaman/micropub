@@ -309,95 +309,13 @@ class MicropubController extends Controller
         string $path,
         array $source
     ): string {
-        $published = Arr::has($source, 'published')
-            ? Carbon::parse(Arr::get($source, 'published'))
-            : Carbon::now();
-
         $contentType = is_string(Arr::get($source, 'content'))
             ? 'text'
             : 'html';
 
-        $connection = $this->getConnection($request);
-
-        $data = collect()
-            ->merge(
-                [
-                    'id' => Str::orderedUuid()->toString(),
-                    'date' => $published,
-                    // 'draft' => true,
-                    'source' => $source,
-                    'view' => 'post',
-                ]
-            )
-            ->when(
-                $request->get('commands.mp-slug', $request->get('mp-slug')),
-                function ($coll, $slug) {
-                    return $coll->put('url', '/' . trim($slug, '/') . '/');
-                }
-            )
-            ->when(
-                Arr::get($source, 'name'),
-                function ($coll, $name) {
-                    return $coll->put('title', $name);
-                }
-            )
-            ->when(
-                Arr::get($source, 'category'),
-                function ($coll, $tags) {
-                    $tags = (array) $tags;
-                    return $coll->put('tags', $tags);
-                }
-            )
-            ->when(
-                Arr::get($source, 'files'),
-                function ($coll, $files) {
-                    // TODO
-                }
-            )
-            ->when(
-                Arr::get($source, 'photo'),
-                function ($coll, $photos) use ($connection, $request) {
-                    return $coll->put(
-                        'photo',
-                        collect($photos)
-                            ->map(
-                                function ($photo) use ($connection, $request) {
-                                    if ($photo instanceof UploadedFile) {
-                                        Log::debug('Photo', ['class' => get_class($photo), 'photo' => $photo]);
-
-                                        $filename = $photo->hashName();
-                                        $path = 'static/photo/' . $filename;
-                                        $slug = 'photo/' . $filename;
-                                        $content = $photo->get();
-                                        $message = 'posted by ' . config('app.name');
-
-                                        Log::debug('Path', compact('path'));
-
-                                        $response = $this->connection()
-                                            ->repo()
-                                            ->contents()
-                                            ->create(
-                                                $request->site->owner,
-                                                $request->site->repo,
-                                                $path,
-                                                $content,
-                                                $message,
-                                                $request->site->branch
-                                            );
-
-                                        Log::debug('GitHub response', compact('response'));
-
-                                        $photo = $this->url($request, $slug);
-                                    }
-
-                                    return is_string($photo) ? ['value' => $photo] : $photo;
-                                }
-                            )
-                            ->all()
-                    );
-                }
-            )
-            ->all();
+        if (!Arr::has($source, 'x-ds-id')) {
+            $source['x-ds-id'] = Str::orderedUuid()->toString();
+        }
 
         $view = 'types.' . Arr::get($source, 'h', 'entry');
 
@@ -409,5 +327,25 @@ class MicropubController extends Controller
                 'source' => $source,
             ]
         )->render();
+    }
+
+    protected function toJf2(array $mf2): array
+    {
+        $jf2 = collect(
+            [
+                'type' => preg_replace('/^h-/', '', Arr::get($mf2, 'type.0')),
+            ]
+        );
+
+        return collect($mf2)
+            ->keys()
+            ->reduce(
+                function ($acc, $key) use ($mf2) {
+                    $value = $mf2[$key];
+
+                    return $acc;
+                },
+            )
+            ->all();
     }
 }
