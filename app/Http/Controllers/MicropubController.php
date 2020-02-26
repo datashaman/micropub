@@ -323,7 +323,6 @@ class MicropubController extends Controller
             $view,
             [
                 'contentType' => $contentType,
-                'frontMatter' => trim(Yaml::dump($data, 10)),
                 'source' => $source,
             ]
         )->render();

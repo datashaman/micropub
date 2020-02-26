@@ -1,5 +1,5 @@
 ---
-{!! $frontMatter !!}
+{!! trim(Yaml::dump($source, 10)) !!}
 ---
 @if($contentType === 'html')
 {!! Arr::get($source, 'content.html') !!}
