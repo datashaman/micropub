@@ -100,7 +100,7 @@ class MicropubController extends Controller
         $nowSlug = $now->format('Y/m/d/His/');
 
         $path = "src/posts/$nowPath.md";
-        $content = $this->content($request, $path, $source);
+        $content = $this->content($request, $source);
         $message = 'posted by ' . config('app.name');
 
         $response = $this->getConnection($request)
@@ -218,7 +218,7 @@ class MicropubController extends Controller
         $source['properties'] = $properties->all();
 
         $path = $this->path($request, $url);
-        $content = $this->content($request, $path, $source);
+        $content = $this->content($request, $source);
         $message = 'posted by ' . config('app.name');
 
         $response = $this->getConnection($request)
@@ -306,26 +306,11 @@ class MicropubController extends Controller
 
     protected function content(
         Request $request,
-        string $path,
         array $source
     ): string {
-        $contentType = is_string(Arr::get($source, 'content'))
-            ? 'text'
-            : 'html';
-
-        if (!Arr::has($source, 'x-ds-id')) {
-            $source['x-ds-id'] = Str::orderedUuid()->toString();
-        }
-
         $view = 'types.' . Arr::get($source, 'h', 'entry');
 
-        return view(
-            $view,
-            [
-                'contentType' => $contentType,
-                'source' => $source,
-            ]
-        )->render();
+        return view($view, ['source' => $source])->render();
     }
 
     protected function toJf2(array $mf2): array
