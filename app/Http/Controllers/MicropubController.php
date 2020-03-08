@@ -84,6 +84,14 @@ class MicropubController extends Controller
     protected function create(Request $request): JsonResponse
     {
         $all = $request->except(['site']);
+
+        Log::info(
+            'Micropub Create Request',
+            [
+                'all' => $all,
+            ]
+        );
+
         $mpRequest = MicropubRequest::create($all);
 
         if ($mpRequest->error) {
@@ -107,7 +115,6 @@ class MicropubController extends Controller
 
         Log::info(
             'Micropub Create Entry', [
-                'all' => $all,
                 'action' => $mpRequest->action,
                 'commands' => $mpRequest->commands,
                 'properties' => $mpRequest->properties,
