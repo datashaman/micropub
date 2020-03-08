@@ -351,8 +351,7 @@ class MicropubController extends Controller
 
     protected function getCard($url): array
     {
-        $embed = new Embed();
-        $info = $embed->get($url);
+        $info = Embed::create($url);
 
         $card = [
             'type' => 'card',
