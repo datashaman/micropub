@@ -365,7 +365,7 @@ class MicropubController extends Controller
             'name' => $info->title,
             'content' => [
                 'text' => $info->description,
-                'html' => $info->code ? $info->code->html : '',
+                'html' => $info->code,
             ],
             'photo' => $info->image,
         ];
