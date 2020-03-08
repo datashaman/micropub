@@ -85,6 +85,24 @@ class MicropubController extends Controller
     {
         $all = $request->except(['site']);
         $mpRequest = MicropubRequest::create($all);
+
+        if ($mpRequest->error) {
+            Log::error(
+                'Micropub Create Error',
+                [
+                    'property' => $mpRequest->error_property,
+                    'description' => $mpRequest->error_description,
+                ]
+            );
+
+            return response()->json(
+                [
+                    $mpRequest->error_property => $mpRequest->error_description,
+                ],
+                500
+            );
+        }
+
         $source = $mpRequest->toMf2();
 
         Log::info(
