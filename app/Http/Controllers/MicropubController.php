@@ -361,7 +361,10 @@ class MicropubController extends Controller
             'type' => 'entry',
             'url' => $info->url,
             'name' => $info->title,
-            'content' => $info->description,
+            'content' => [
+                'text' => $info->description,
+                'html' => $info->code->html,
+            ],
             'photo' => $info->image,
         ];
 
