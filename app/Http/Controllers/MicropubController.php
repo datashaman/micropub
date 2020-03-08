@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Embed\Embed;
 use GrahamCampbell\GitHub\GitHubFactory;
 use GuzzleHttp\Client;
 use Html2Text\Html2Text;
