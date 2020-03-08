@@ -135,10 +135,19 @@ class MicropubController extends Controller
 
         $published = Carbon::now();
 
-        $nowPath = Str::slug($published->toDateTimeString());
-        $nowSlug = $published->format('Y/m/d/His/');
+        $slug = $request->get(
+            'commands.mp-slug',
+            $request->get('mp-slug', $nowSlug)
+        );
 
-        $path = "src/posts/$nowPath.md";
+        if (!$slug) {
+            $slug = $published->format('His');
+        };
+
+        $url = $published->format('Y/m/d/') . $slug . '/';
+        $path = Str::slug($url);
+
+        $path = "src/posts/$path.md";
         $content = $this->content($request, $source, $published);
         $message = 'posted by ' . config('app.name');
 
@@ -154,8 +163,7 @@ class MicropubController extends Controller
                 $request->site->branch
             );
 
-        $slug = $request->get('commands.mp-slug', $request->get('mp-slug', $nowSlug));
-        $location = $this->url($request, $slug);
+        $location = $this->url($request, $url);
 
         Log::info('Post created', compact('location'));
 
