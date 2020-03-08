@@ -324,7 +324,7 @@ class MicropubController extends Controller
         $repostOf = Arr::get($data, 'repost-of');
 
         if (is_string($repostOf)) {
-            if (!Arr::has($data['references'])) {
+            if (!Arr::has($data, 'references')) {
                 $data['references'] = [];
             }
 
