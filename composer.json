@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
-        "brick/math": "^0.8.14",
         "dissolve/socialstream": "dev-master",
         "doctrine/dbal": "^2.10",
         "embed/embed": "^3.4",
@@ -23,6 +22,7 @@
         "laravel/socialite": "^4.3",
         "laravel/tinker": "^2.0",
         "masterminds/html5": "^2.7",
+        "moontoast/math": "^1.2",
         "p3k/micropub": "^0.0.3",
         "php-http/guzzle6-adapter": "^2.0",
         "spatie/yaml-front-matter": "^2.0",
