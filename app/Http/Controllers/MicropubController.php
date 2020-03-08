@@ -364,7 +364,7 @@ class MicropubController extends Controller
             'url' => $info->url,
             'name' => $info->title,
             'content' => [
-                'text' => $info->description,
+                'text' => preg_replace('/(^“|”$)/', '', $info->description),
                 'html' => $info->code,
             ],
             'photo' => $info->image,
