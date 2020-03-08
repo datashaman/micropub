@@ -324,7 +324,11 @@ class MicropubController extends Controller
         $repostOf = Arr::get($data, 'repost-of');
 
         if (is_string($repostOf)) {
-            $data['repost-of'] = $this->getCard($repostOf);
+            if (!Arr::has($data['references'])) {
+                $data['references'] = [];
+            }
+
+            $data['references'][$repostOf] = $this->getReference($repostOf);
         }
 
         Log::debug(
@@ -349,32 +353,33 @@ class MicropubController extends Controller
         return $cleaner->clean($mf2, $request->site->url, $request->site->lang ?? 'en');
     }
 
-    protected function getCard($url): array
+    protected function getReference($url): array
     {
         $info = Embed::create($url);
 
-        $card = [
-            'type' => 'card',
+        $reference = [
+            'type' => 'entry',
             'url' => $info->url,
             'name' => $info->title,
-            'summary' => $info->description,
+            'content' => $info->description,
             'photo' => $info->image,
         ];
 
         $author = [];
 
-        if ($info->authorName) {
-            $author['name'] = $info->authorName;
+        if ($info->authorName && $info->authorUrl) {
+            $reference['author'] = [
+                'name' => $info->authorName,
+                'url' => $info->authorUrl,
+            ];
+        } elseif ($info->authorUrl) {
+            $reference['author'] = $info->authorUrl;
         }
 
-        if ($info->authorUrl) {
-            $author['url'] = $info->authorUrl;
+        if ($info->publishedTime) {
+            $reference['published'] = $info->publishedTime;
         }
 
-        if ($author) {
-            $card['author'] = $author;
-        }
-
-        return $card;
+        return $reference;
     }
 }
