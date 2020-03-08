@@ -85,6 +85,10 @@ class MicropubController extends Controller
     {
         $all = $request->except(['site']);
 
+        if (Arr::has($all, 'category')) {
+            $all['category'] = array_filter($all['category']);
+        }
+
         Log::info(
             'Micropub Create Request',
             [
