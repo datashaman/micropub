@@ -321,6 +321,16 @@ class MicropubController extends Controller
             $data['published'] = $published->toIso8601String();
         }
 
+        $likeOf = Arr::get($data, 'like-of');
+
+        if (is_string($likeOf)) {
+            if (!Arr::has($data, 'references')) {
+                $data['references'] = [];
+            }
+
+            $data['references'][$likeOf] = $this->getReference($likeOf);
+        }
+
         $repostOf = Arr::get($data, 'repost-of');
 
         if (is_string($repostOf)) {
