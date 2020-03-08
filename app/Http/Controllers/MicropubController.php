@@ -320,6 +320,10 @@ class MicropubController extends Controller
             $data['published'] = $published->toIso8601String();
         }
 
+        if ($repostOf = Arr::get($data, 'repost-of') && is_string($repostOf)) {
+            $data['repost-of'] = $this->getCard($repostOf);
+        }
+
         Log::debug(
             'Content',
             [
@@ -340,5 +344,35 @@ class MicropubController extends Controller
         $cleaner = new Jf2StreamCleaner();
 
         return $cleaner->clean($mf2, $request->site->url, $request->site->lang ?? 'en');
+    }
+
+    protected function getCard($url): array
+    {
+        $embed = new Embed();
+        $info = $embed->get($url);
+
+        $card = [
+            'type' => 'card',
+            'url' => $info->url,
+            'name' => $info->title,
+            'summary' => $info->description,
+            'photo' => $info->image,
+        ];
+
+        $author = [];
+
+        if ($info->authorName) {
+            $author['name'] = $info->authorName;
+        }
+
+        if ($info->authorUrl) {
+            $author['url'] = $info->authorUrl;
+        }
+
+        if ($author) {
+            $card['author'] = $author;
+        }
+
+        return $card;
     }
 }
