@@ -309,7 +309,7 @@ class MicropubController extends Controller
         Request $request,
         array $source
     ): string {
-        $jf2 = $this->toJf2($source);
+        $jf2 = $this->toJf2($request, $source);
 
         Log::debug(
             'Content',
@@ -324,8 +324,10 @@ class MicropubController extends Controller
         return view($view, ['source' => $source])->render();
     }
 
-    protected function toJf2(array $mf2): array
-    {
+    protected function toJf2(
+        Request $request,
+        array $mf2
+    ): array {
         $cleaner = new Jf2StreamCleaner();
 
         return $cleaner->clean($mf2, $request->site->url, $request->site->lang ?? 'en');
