@@ -309,19 +309,19 @@ class MicropubController extends Controller
         Request $request,
         array $source
     ): string {
-        $jf2 = $this->toJf2($request, $source);
+        $data = $this->toJf2($request, $source);
 
         Log::debug(
             'Content',
             [
-                'mf2' => $source,
-                'jf2' => $jf2,
+                'source' => $source,
+                'data' => $data,
             ]
         );
 
-        $view = 'types.' . Arr::get($source, 'h', 'entry');
+        $view = 'types.' . Arr::get($jf2, 'type', 'entry');
 
-        return view($view, ['source' => $source])->render();
+        return view($view, ['data' => $data])->render();
     }
 
     protected function toJf2(

@@ -1,3 +1,3 @@
 ---
-{!! yaml_dump($source, 10) !!}
+{!! yaml_dump($data, 10) !!}
 ---
