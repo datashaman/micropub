@@ -311,6 +311,14 @@ class MicropubController extends Controller
     ): string {
         $data = $this->toJf2($request, $source);
 
+        if (!Arr::has($data, 'uid')) {
+            $data['uid'] = (string) Str::orderedUuid();
+        }
+
+        if (!Arr::has($data, 'published')) {
+            $data['published'] = Carbon::now()->toIso8601String();
+        }
+
         Log::debug(
             'Content',
             [
