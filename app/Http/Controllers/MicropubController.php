@@ -141,9 +141,8 @@ class MicropubController extends Controller
         );
 
         $url = $published->format('Y/m/d/') . $slug . '/';
-        $path = Str::slug($url);
+        $path = 'src/posts/' . rtrim(str_replace('//', '-', $url), '/') . '.md';
 
-        $path = "src/posts/$path.md";
         $content = $this->content($request, $source, $published);
         $message = 'posted by ' . config('app.name');
 
