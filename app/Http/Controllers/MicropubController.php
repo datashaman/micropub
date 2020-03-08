@@ -95,13 +95,13 @@ class MicropubController extends Controller
             ]
         );
 
-        $now = Carbon::now();
+        $published = Carbon::now();
 
         $nowPath = Str::slug($now->toDateTimeString());
         $nowSlug = $now->format('Y/m/d/His/');
 
         $path = "src/posts/$nowPath.md";
-        $content = $this->content($request, $source);
+        $content = $this->content($request, $source, $published);
         $message = 'posted by ' . config('app.name');
 
         $response = $this->getConnection($request)
@@ -307,7 +307,8 @@ class MicropubController extends Controller
 
     protected function content(
         Request $request,
-        array $source
+        array $source,
+        Carbon $published = null
     ): string {
         $data = $this->toJf2($request, $source);
 
@@ -315,8 +316,8 @@ class MicropubController extends Controller
             $data['uid'] = (string) Str::orderedUuid();
         }
 
-        if (!Arr::has($data, 'published')) {
-            $data['published'] = Carbon::now()->toIso8601String();
+        if ($published) {
+            $data['published'] = $published->toIso8601String();
         }
 
         Log::debug(
