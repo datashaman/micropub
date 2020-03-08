@@ -321,14 +321,15 @@ class MicropubController extends Controller
             $data['published'] = $published->toIso8601String();
         }
 
-        $ofs = [
+        $references = [
             'bookmark-of',
+            'in-reply-to',
             'like-if',
             'repost-of',
         ];
 
-        foreach ($ofs as $of) {
-            $url = Arr::get($data, $of);
+        foreach ($references as $reference) {
+            $url = Arr::get($data, $reference);
 
             if (is_string($url)) {
                 if (!Arr::has($data, 'references')) {
