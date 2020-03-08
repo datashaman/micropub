@@ -324,7 +324,7 @@ class MicropubController extends Controller
         $references = [
             'bookmark-of',
             'in-reply-to',
-            'like-if',
+            'like-of',
             'repost-of',
         ];
 
