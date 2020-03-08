@@ -12,6 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use IndieWeb\jf2stream\Jf2StreamCleaner;
 use p3k\Micropub\Request as MicropubRequest;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 use stdClass;
@@ -308,6 +309,16 @@ class MicropubController extends Controller
         Request $request,
         array $source
     ): string {
+        $jf2 = $this->toJf2($source);
+
+        Log::debug(
+            'Content',
+            [
+                'mf2' => $source,
+                'jf2' => $jf2,
+            ]
+        );
+
         $view = 'types.' . Arr::get($source, 'h', 'entry');
 
         return view($view, ['source' => $source])->render();
@@ -315,21 +326,8 @@ class MicropubController extends Controller
 
     protected function toJf2(array $mf2): array
     {
-        $jf2 = collect(
-            [
-                'type' => preg_replace('/^h-/', '', Arr::get($mf2, 'type.0')),
-            ]
-        );
+        $cleaner = new Jf2StreamCleaner();
 
-        return collect($mf2)
-            ->keys()
-            ->reduce(
-                function ($acc, $key) use ($mf2) {
-                    $value = $mf2[$key];
-
-                    return $acc;
-                },
-            )
-            ->all();
+        return $cleaner->clean($mf, $request->site->url, $request->site->lang ?? 'en');
     }
 }
