@@ -320,7 +320,9 @@ class MicropubController extends Controller
             $data['published'] = $published->toIso8601String();
         }
 
-        if ($repostOf = Arr::get($data, 'repost-of') && is_string($repostOf)) {
+        $repostOf = Arr::get($data, 'repost-of');
+
+        if (is_string($repostOf)) {
             $data['repost-of'] = $this->getCard($repostOf);
         }
 
