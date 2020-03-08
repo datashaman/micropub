@@ -328,6 +328,6 @@ class MicropubController extends Controller
     {
         $cleaner = new Jf2StreamCleaner();
 
-        return $cleaner->clean($mf, $request->site->url, $request->site->lang ?? 'en');
+        return $cleaner->clean($mf2, $request->site->url, $request->site->lang ?? 'en');
     }
 }
