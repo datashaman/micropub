@@ -319,7 +319,7 @@ class MicropubController extends Controller
             ]
         );
 
-        $view = 'types.' . Arr::get($jf2, 'type', 'entry');
+        $view = 'types.' . Arr::get($data, 'type', 'entry');
 
         return view($view, ['data' => $data])->render();
     }
