@@ -357,6 +357,8 @@ class MicropubController extends Controller
     {
         $info = Embed::create($url);
 
+        Log::debug('Core', ['code' => $info->code]);
+
         $reference = [
             'type' => 'entry',
             'url' => $info->url,
