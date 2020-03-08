@@ -20,12 +20,11 @@ class MicropubAuth
      */
     public function handle($request, Closure $next)
     {
-        Log::debug('Request', ['all' => $request->all(), 'headers' => $request->headers]);
-
         $accessToken = $request->get('access_token') ?: $request->bearerToken();
-        Log::debug('Access token', compact('accessToken'));
 
         if (empty($accessToken)) {
+            Log::warning('Micropub request without access token');
+
             return response()->json(['error' => 'unauthorized'], 401);
         }
 
@@ -41,16 +40,19 @@ class MicropubAuth
         $body = (string) $response->getBody();
         $user = json_decode($body, true);
 
-        Log::debug('IndieAuth user', compact('user'));
+        Log::info('Micropub Authenticated', compact('user'));
 
         $site = Site::query()
             ->where('url', $user['me'])
             ->first();
 
         if (!$site) {
+            Log::warning('Site not found', ['url' => $user['me']]);
+
             return response()->json(['error' => 'forbidden'], 403);
         }
 
+        Log::info('Micropub site', ['site' => $site]);
         $request->merge(['site' => $site]);
 
         return $next($request);

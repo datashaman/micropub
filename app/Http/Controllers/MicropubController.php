@@ -83,11 +83,13 @@ class MicropubController extends Controller
 
     protected function create(Request $request): JsonResponse
     {
-        $mpRequest = MicropubRequest::create($request->except(['site']));
+        $all = $request->except(['site']);
+        $mpRequest = MicropubRequest::create($all);
         $source = $mpRequest->toMf2();
 
-        Log::debug(
-            'Create', [
+        Log::info(
+            'Micropub Create Entry', [
+                'all' => $all,
                 'action' => $mpRequest->action,
                 'commands' => $mpRequest->commands,
                 'properties' => $mpRequest->properties,
@@ -117,12 +119,10 @@ class MicropubController extends Controller
                 $request->site->branch
             );
 
-        Log::debug('Response', compact('response'));
-
         $slug = $request->get('commands.mp-slug', $request->get('mp-slug', $nowSlug));
         $location = $this->url($request, $slug);
 
-        Log::debug('Slug', compact('slug', 'location'));
+        Log::info('Post created', compact('location'));
 
         return response()->json(
             null,

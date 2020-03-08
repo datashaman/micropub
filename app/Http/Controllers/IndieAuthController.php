@@ -38,7 +38,7 @@ class IndieAuthController extends Controller
         [$authURL, $error] = Client::begin($request['url'], 'create update');
 
         if ($error) {
-            Log::error('error', $error);
+            Log::error($error);
 
             return redirect()
                 ->back()
@@ -53,7 +53,7 @@ class IndieAuthController extends Controller
         [$user, $error] = Client::complete($request->all());
 
         if ($error) {
-            Log::error('error', $error);
+            Log::error($error);
 
             return redirect()
                 ->back()
