@@ -321,24 +321,22 @@ class MicropubController extends Controller
             $data['published'] = $published->toIso8601String();
         }
 
-        $likeOf = Arr::get($data, 'like-of');
+        $ofs = [
+            'bookmark-of',
+            'like-if',
+            'repost-of',
+        ];
 
-        if (is_string($likeOf)) {
-            if (!Arr::has($data, 'references')) {
-                $data['references'] = [];
+        foreach ($ofs as $of) {
+            $url = Arr::get($data, $of);
+
+            if (is_string($url)) {
+                if (!Arr::has($data, 'references')) {
+                    $data['references'] = [];
+                }
+
+                $data['references'][$url] = $this->getReference($url);
             }
-
-            $data['references'][$likeOf] = $this->getReference($likeOf);
-        }
-
-        $repostOf = Arr::get($data, 'repost-of');
-
-        if (is_string($repostOf)) {
-            if (!Arr::has($data, 'references')) {
-                $data['references'] = [];
-            }
-
-            $data['references'][$repostOf] = $this->getReference($repostOf);
         }
 
         Log::debug(
