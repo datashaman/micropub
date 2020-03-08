@@ -160,7 +160,7 @@ class MicropubController extends Controller
 
         $location = $this->url($request, $url);
 
-        Log::info('Post created', compact('location'));
+        Log::info('Post created', compact('location', 'path', 'response'));
 
         return response()->json(
             null,
