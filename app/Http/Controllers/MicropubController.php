@@ -137,12 +137,8 @@ class MicropubController extends Controller
 
         $slug = $request->get(
             'commands.mp-slug',
-            $request->get('mp-slug', $nowSlug)
+            $request->get('mp-slug', $published->format('His'))
         );
-
-        if (!$slug) {
-            $slug = $published->format('His');
-        };
 
         $url = $published->format('Y/m/d/') . $slug . '/';
         $path = Str::slug($url);
